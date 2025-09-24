@@ -1,0 +1,77 @@
+body,
+html{
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+   font-family: "Inter", sans-serif;
+   background-color: rgba(250, 250, 252, 1);
+}
+
+a{
+  text-decoration: none;
+}
+
+/*And design table global style  */
+.ant-table-container table {
+  border-collapse: separate !important;
+  border-spacing: 0 20px !important;
+  width: 95% !important;
+  margin: 0 auto;
+  border-radius: none !important;
+  /* border: 1px solid green !important; */
+}
+
+.ant-table-wrapper .ant-table {
+     border-radius: 0 !important;
+}
+.ant-table-thead tr th{
+    background-color: transparent !important;
+    font-weight: 600 !important;
+    font-size: 16px;
+    padding-top: 0 !important;
+}
+.ant-table-thead tr th::before{
+    display: none !important;
+}
+.ant-table-tbody > tr {
+  background-color: rgba(251, 252, 255, 1) !important;
+}
+.ant-table-tbody >tr >td {
+    border: none !important;
+}
+.ant-table-tbody > tr > td:first-child {
+  color: rgba(144, 144, 144, 1) !important;
+}
+.ant-table-tbody > tr > td{
+  /* border: 1px solid red !important; */
+  font-size: 14px !important;
+  font-weight: 400 !important;
+}
+ .yes-icon,
+    .no-icon{
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 20px;
+    }
+    .icon-list{
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+/* @media only screen and (max-width: 1250px) {
+.ant-table-container table {
+ overflow: scroll !important;
+}
+} */
+
+.test{
+display: flex;
+justify-content: center;
+width: 100%;
+padding: 0;
+margin: 0;
+color: green;
+}
