@@ -37,12 +37,12 @@ export default function Roles() {
     <div className={styles.rulesPage}>
       <h4 className="test">Adminlerin rolunun verilmesi seifesi</h4>
 
-      <Table
+      {/* <Table
         columns={columns}
         dataSource={RolesTableData}
         rowKey="id"
         pagination={{pageSize:3}}
-      />
+      /> */}
     </div>
   );
 }

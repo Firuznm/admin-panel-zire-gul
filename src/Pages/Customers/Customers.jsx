@@ -105,12 +105,12 @@ export default function Customers() {
   return (
       <div className={styles.customersPage}>
           <h4 className="test">MUSTERILER SEIFESI</h4>
-      <Table
+      {/* <Table
         columns={columns}
         dataSource={CustomersTableBodyData}
         rowKey="id"
         pagination={{ pageSize: 4 }}
-      />
+      /> */}
     </div>
   );
 }

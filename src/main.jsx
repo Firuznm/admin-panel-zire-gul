@@ -1,7 +1,6 @@
 import "./index.css";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Header from "./Components/Header/Header";
 import Layout from "./Layout/Layout";
 import Customers from "./Pages/Customers/Customers";
 import Roles from "./Pages/Roles/Roles";

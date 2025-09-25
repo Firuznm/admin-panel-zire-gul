@@ -3,6 +3,7 @@ import { userTableBodyData } from "../../MyDatas/Data";
 import DeleteIcon from "../../assets/Icons/DeleteIcon";
 import EditIcon from "../../assets/Icons/EditIcon";
 import styles from "./User.module.scss";
+import SearchAndAdd from "../../Components/SearchAndAdd/SearchAndAdd";
 
 export default function User() {
   const columns = [
@@ -70,12 +71,12 @@ export default function User() {
 
   return (
     <div className={styles.userPage}>
-      <h4 className="test"> ISTIFADEKI seifesi</h4>
+      <SearchAndAdd addBtntext={"Add New User"} filter={false} />
       <Table
         columns={columns}
         dataSource={userTableBodyData}
         rowKey="id"
-        pagination={{pageSize:2}}
+        pagination={{ pageSize: 2 }}
       />
     </div>
   );
