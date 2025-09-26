@@ -3,6 +3,7 @@ import EditIcon from "../../assets/Icons/EditIcon";
 import styles from "./Roles.module.scss"
 import { RolesTableData } from "../../MyDatas/Data";
 import { Table } from "antd";
+import SearchAndAdd from "../../Components/SearchAndAdd/SearchAndAdd";
 
 export default function Roles() {
 
@@ -35,14 +36,14 @@ export default function Roles() {
 
   return (
     <div className={styles.rulesPage}>
-      <h4 className="test">Adminlerin rolunun verilmesi seifesi</h4>
+     <SearchAndAdd addBtntext={"Add New User"} filter={false} />
 
-      {/* <Table
+       <Table
         columns={columns}
         dataSource={RolesTableData}
         rowKey="id"
         pagination={{pageSize:3}}
-      /> */}
+      /> 
     </div>
   );
 }

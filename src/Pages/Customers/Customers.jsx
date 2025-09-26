@@ -7,8 +7,14 @@ import YesIcon from "../../assets/Icons/YesIcon";
 import { CustomersTableBodyData } from "../../MyDatas/Data";
 import styles from "./Customers.module.scss"
 import { NavLink } from "react-router-dom";
+import SearchAndAdd from "../../Components/SearchAndAdd/SearchAndAdd";
+import { UseGlobalContext } from "../../Context/GlobalContext";
+import Modal from "../../Components/Modal/Modal";
 
 export default function Customers() {
+    
+  const {closeOpenModalFunc} = UseGlobalContext()
+
      const columns = [
        {
          title: "#Id",
@@ -18,14 +24,14 @@ export default function Customers() {
        },
        {
          title: "Full Name",
-         dataIndex: "fullName", 
+         dataIndex: "fullName",
          key: "fullName",
        },
        {
          title: "Phone",
          dataIndex: "phone",
          key: "phone",
-         width:125
+         width: 125,
        },
        {
          title: "Email",
@@ -92,7 +98,7 @@ export default function Customers() {
              <NavLink to="/user-info">
                <EyeIcon />
              </NavLink>
-             <span onClick={() => console.log("edit iconu click olundu")}>
+             <span onClick={closeOpenModalFunc}>
                <EditIcon />
              </span>
              <span onClick={() => console.log("delete basildi !!!")}>
@@ -103,14 +109,15 @@ export default function Customers() {
        },
      ];
   return (
-      <div className={styles.customersPage}>
-          <h4 className="test">MUSTERILER SEIFESI</h4>
-      {/* <Table
+    <div className={styles.customersPage}>
+      <SearchAndAdd addBtntext={"Add New Customers"} filter={true} />
+      <Table
         columns={columns}
         dataSource={CustomersTableBodyData}
         rowKey="id"
-        pagination={{ pageSize: 4 }}
-      /> */}
+        pagination={{ pageSize: 10 }}
+      />
+      <Modal/>
     </div>
   );
 }

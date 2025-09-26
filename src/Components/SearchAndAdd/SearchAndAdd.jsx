@@ -5,7 +5,7 @@ import FilterIcon from "../../assets/Icons/FilterIcon"
 import AddIcon from "../../assets/Icons/AddIcon"
 
 export default function SearchAndAdd({ addBtntext, filter }) {
-    
+     
     const [showHiddenArea, setShowHiddenArea] = useState(false);
     const [searchValue, setSearchValue] = useState("");
 

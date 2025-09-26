@@ -6,6 +6,7 @@ import Customers from "./Pages/Customers/Customers";
 import Roles from "./Pages/Roles/Roles";
 import User from "./Pages/User/User";
 import UserInfoPage from "./Pages/UserInfoPage/UserInfoPage";
+import { GlobalProvider } from "./Context/GlobalContext";
 
 
 
@@ -23,17 +24,19 @@ const router = createBrowserRouter([
         element: <Customers />,
       },
       {
-        path: "user",
+        path: "/",
         element: <User />,
       },
       {
         path: "user-info",
         element: <UserInfoPage/>,
       },
-    ],
+    ], 
   },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
+  <GlobalProvider>
     <RouterProvider router={router} />
+  </GlobalProvider>
 );

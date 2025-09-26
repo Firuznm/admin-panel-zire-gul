@@ -50,7 +50,7 @@ export default function Sidebar() {
         }`}
       >
         <NavLink
-          to="user"
+          to="/"
           className={({ isActive }) => ` ${isActive ? styles.active : ""}`}
         >
           {({ isActive }) => (
@@ -73,12 +73,12 @@ export default function Sidebar() {
             </>
           )}
         </NavLink>
-        <NavLink
-          to="/"
+        {/* <NavLink
+          to=""
           className={({ isActive }) => ` ${isActive ? styles.active : ""}`}
         >
           <UserActivitiesIcon /> User Activities
-        </NavLink>
+        </NavLink> */}
       </div>
 
       <div

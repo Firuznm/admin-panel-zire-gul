@@ -4,8 +4,12 @@ import DeleteIcon from "../../assets/Icons/DeleteIcon";
 import EditIcon from "../../assets/Icons/EditIcon";
 import styles from "./User.module.scss";
 import SearchAndAdd from "../../Components/SearchAndAdd/SearchAndAdd";
+import { UseGlobalContext } from "../../Context/GlobalContext";
+import Modal from "../../Components/Modal/Modal";
 
 export default function User() {
+  const {closeOpenModalFunc} = UseGlobalContext()
+
   const columns = [
     {
       title: "#Id",
@@ -58,7 +62,7 @@ export default function User() {
       key: "actions",
       render: () => (
         <div className="icon-list">
-          <span onClick={() => console.log("edit iconu click olundu")}>
+          <span onClick={closeOpenModalFunc}>
             <EditIcon />
           </span>
           <span onClick={() => console.log("delete basildi !!!")}>
@@ -68,7 +72,6 @@ export default function User() {
       ),
     },
   ];
-
   return (
     <div className={styles.userPage}>
       <SearchAndAdd addBtntext={"Add New User"} filter={false} />
@@ -78,6 +81,8 @@ export default function User() {
         rowKey="id"
         pagination={{ pageSize: 2 }}
       />
-    </div>
+      <Modal/>
+
+    </div> 
   );
 }
