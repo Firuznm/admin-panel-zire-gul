@@ -3,9 +3,11 @@ import styles from "./SearchAndAdd.module.scss"
 import SearchIcon from "../../assets/Icons/SearchIcon"
 import FilterIcon from "../../assets/Icons/FilterIcon"
 import AddIcon from "../../assets/Icons/AddIcon"
+import { UseGlobalContext } from "../../Context/GlobalContext"
 
 export default function SearchAndAdd({ addBtntext, filter }) {
      
+    const { closeOpenModalFunc } = UseGlobalContext();
     const [showHiddenArea, setShowHiddenArea] = useState(false);
     const [searchValue, setSearchValue] = useState("");
 
@@ -16,7 +18,7 @@ export default function SearchAndAdd({ addBtntext, filter }) {
     const handleSearch = (e) => {
         setSearchValue(e.target.value)
     }
-console.log("inp value=", searchValue);
+// console.log("inp value=", searchValue);
 
   return (
     <div className={styles.searchAndAddArea}>
@@ -27,7 +29,7 @@ console.log("inp value=", searchValue);
           type="text"
           placeholder="Search"
           value={searchValue}
-          onChange={handleSearch}
+          onChange={handleSearch}  
         />
       </label>
    {filter &&   <div className={styles.filterArea}>
@@ -43,7 +45,7 @@ console.log("inp value=", searchValue);
               }
       </div>
 }
-      <button className={styles.addBtn}>
+      <button onClick={closeOpenModalFunc} className={styles.addBtn}>
         <AddIcon /> {addBtntext}
       </button>
     </div>

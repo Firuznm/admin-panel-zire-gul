@@ -1,15 +1,26 @@
-import { useState } from "react";
 import styles from "./Input.module.scss"
 
-export default function Input() {
-  const [inpValue, setInpValue]= useState()
-  const onChangeInput = (e) => {
-    setInpValue(e.target.value)
-  }
+export default function Input({ inputData, value, onChange }) {
   return (
     <div className={styles.imputWrapper}>
-      <label htmlFor="id">Firuz</label>
-      <input type="text" id="id" className={styles.input} value={inpValue} onChange={onChangeInput} />
+      <label htmlFor={inputData.id}>{inputData.label}</label>
+      {inputData.inputType === "select" ? (
+        <select name={inputData.name} value={value} onChange={onChange} className={styles.selectInp}>
+          {inputData?.selectData?.map((option, index) => (
+            <option value={option} key={index}>
+              {option}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <input
+          name={inputData.name}
+          type={inputData.inputType}
+          className={styles.input}
+            value={value}
+          onChange={onChange}
+        />
+      )}
     </div>
   );
 }
