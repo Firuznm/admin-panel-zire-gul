@@ -4,7 +4,7 @@ import styles from "./Modal.module.scss";
 import { UseGlobalContext } from "../../Context/GlobalContext";
 import { useEffect } from "react";
 
-export default function Modal({ ModalData, title, formik}) {
+export default function Modal({ ModalData, title, formik,}) {
   const { showHiddenModal, closeOpenModalFunc } = UseGlobalContext();
 
   useEffect(() => {

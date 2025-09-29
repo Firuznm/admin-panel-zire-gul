@@ -13,6 +13,7 @@ a{
 h4{
   margin: 0;
   padding: 0;
+  
 }
 /*And design table global style  */
 .ant-table-container table {
@@ -57,11 +58,18 @@ h4{
     }
     .icon-list{
       display: flex;
+      justify-content: end;
       align-items: center;
       gap: 10px;
       cursor: pointer;
     }
 
+    .ant-switch{
+      width: 40px;
+    }
+    .ant-switch-checked{
+      background: rgba(52, 199, 89, 1) !important;
+    }
 /* @media only screen and (max-width: 1250px) {
 .ant-table-container table {
  overflow: scroll !important;

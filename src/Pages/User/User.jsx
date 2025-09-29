@@ -15,13 +15,13 @@ export default function User() {
     const [users, setUsers] = useState([]);
     const [editUser, setEditUser] = useState(null);
  
-  const rolesData = ["Admin", "Super Admin", "Komecki Admin"]
+    const rolesData = ["Admin", "Super Admin", "Komecki Admin"]
 
-  const modalData = [
+    const modalData = [
     {
       id: 1,
-      label: "Ad-Soyad",
-      name: "Ad-Soyad",
+      label: "Full Name",
+      name: "Full Name",
       inputType: "text",
     },
     {
@@ -32,20 +32,27 @@ export default function User() {
     },
     {
       id: 3,
+      label: "Status",
+      name: "Status",
+      inputType: "switch",
+    },
+    {
+      id: 4,
       label: "Roles",
       name: "Roles",
       inputType: "select",
       selectData: rolesData,
-    },
+      },
+      {
+      id:5
+    }
   ];
 
-
-
-   const { values, setValues, handleChange, handleSubmit, resetForm } =
-     useFormik({
+   const { values, setValues, handleChange, handleSubmit, resetForm } =  useFormik({
        initialValues: {
-         ["Ad-Soyad"]: "",
+         ["Full Name"]: "",
          Email: "",
+         Status: "Inactive",
          Roles: "",
        },
        enableReinitialize: true,
@@ -65,22 +72,20 @@ export default function User() {
            setUsers((prev) => [...prev, newUser]);
          }
          resetForm();
-         closeOpenModalFunc()
+         closeOpenModalFunc();
        },
      });
 
 useEffect(() => {
   if (editUser) {
     setValues({
-      "Ad-Soyad": editUser["Ad-Soyad"],
+      ["Full Name"]: editUser["Full Name"],
       Email: editUser.Email,
+      Status:editUser.status,
       Roles: editUser.Roles,
     });
   }
 }, [editUser, setValues]);
-
-
-
 
   const columns = [
     {
@@ -91,7 +96,7 @@ useEffect(() => {
     },
     {
       title: "Full Name",
-      dataIndex: "Ad-Soyad",
+      dataIndex: "Full Name",
       key: "fullName",
     },
     {
@@ -99,42 +104,47 @@ useEffect(() => {
       dataIndex: "Email",
       key: "email",
     },
-    // {
-    //   title: "Status",
-    //   dataIndex: "status",
-    //   key: "status",
-    //   width: 150,
-    //   render: (status) => (
-    //     <span
-    //       className={`${
-    //         status === "Active" ? styles.activeStatus : styles.noActiveStatus
-    //       }`}
-    //     >
-    //       {status}
-    //     </span>
-    //   ),
-    // },
+    {
+      title: "Status",
+      dataIndex: "Status",
+      key: "status",
+      width: 150,
+      render: (status) => (
+        <span
+          className={`${
+            status === "Active" ? styles.activeStatus : styles.noActiveStatus
+          }`}
+        >
+          {status ? "Active" : "DeActive"}
+        </span>
+      ),
+    },
     {
       title: "Roles",
       dataIndex: "Roles",
       key: "roles",
     },
-    // {
-    //   title: "Last Login",
-    //   dataIndex: "lastLogin",
-    //   key: "lastLogin",
-    // },
-    // {
-    //   title: "Created At",
-    //   dataIndex: "createdAt",
-    //   key: "createdAt",
-    // },
+    {
+      title: "Last Login",
+      dataIndex: "lastLogin",
+      key: "lastLogin",
+    },
+    {
+      title: "Created At",
+      dataIndex: "createdAt",
+      key: "createdAt",
+    },
     {
       title: "Actions",
       key: "actions",
       render: (record) => (
         <div className="icon-list">
-          <span onClick={() => { setEditUser(record); closeOpenModalFunc() }}>
+          <span
+            onClick={() => {
+              setEditUser(record);
+              closeOpenModalFunc();
+            }}
+          >
             <EditIcon />
           </span>
           <span
@@ -150,6 +160,7 @@ useEffect(() => {
   ]; 
 
 
+
   return (
     <div className={styles.userPage}>
       <SearchAndAdd addBtntext={"Add New User"} filter={false} />
@@ -157,13 +168,12 @@ useEffect(() => {
         columns={columns}
         dataSource={users}
         rowKey="id"
-        pagination={{ pageSize: 2 }}
+        pagination={{ pageSize: 8 }}
       />
       <Modal
         ModalData={modalData}
         title={editUser ? "Edit User" : "Add New User"}
         formik={{ values, handleChange, handleSubmit }}
-        onClose={() => setEditUser(null)}
       />
     </div>
   );

@@ -1,4 +1,6 @@
 import "./index.css";
+import "antd/dist/reset.css";
+import { ConfigProvider } from "antd";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "./Layout/Layout";
@@ -36,7 +38,9 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <GlobalProvider>
-    <RouterProvider router={router} />
-  </GlobalProvider>
+  <ConfigProvider>
+    <GlobalProvider>
+      <RouterProvider router={router} />
+    </GlobalProvider>
+  </ConfigProvider>
 );
