@@ -7,12 +7,14 @@ import Modal from "../../Components/Modal/Modal";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { UseGlobalContext } from "../../Context/GlobalContext";
+import ModalForAdd from "../../Components/ModalForAdd/ModalForAdd";
+import ModalForEditing from "../../Components/ModalForEditing/ModalForEditing";
+// import ziraGulAdminPanel from "../../Helpers/Helpers";
 
 export default function Roles() {
   const { closeOpenModalFunc } = UseGlobalContext();
   const [roles, setRoles] = useState([]);
   const [editRoles, setEditRoles] = useState(null);
-
 
   const selectInputData = ["test 1", "test 2", "test 3", "test 4"];
   const checkboxInputData = ["firuz 1", "firuz 2", "firuz 3", "firuz 4"];
@@ -111,11 +113,14 @@ const modalFormData = [
         rowKey="id"
         pagination={{ pageSize: 3 }}
       />
-      <Modal
+      <ModalForAdd
         ModalData={modalFormData}
         title={editRoles ? "Edit Role" : "Add New Role"}
         formik={{ values, handleChange, handleSubmit }}
+        gridTempCol="1fr"
       />
+
+      <ModalForEditing/>
     </div>
   );
 }

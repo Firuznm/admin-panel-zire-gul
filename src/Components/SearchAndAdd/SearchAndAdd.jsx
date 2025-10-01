@@ -47,7 +47,7 @@ export default function SearchAndAdd({ addBtntext, filter }) {
 }
       <button onClick={closeOpenModalFunc} className={styles.addBtn}>
         <AddIcon /> {addBtntext}
-      </button>
+      </button> 
     </div>
   );
 }

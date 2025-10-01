@@ -1,20 +1,21 @@
 import CloseIcon from "../../assets/Icons/CloseIcon";
 import Input from "../Input/Input";
-import styles from "./Modal.module.scss";
+import styles from "./ModalAdd.module.scss";
 import { UseGlobalContext } from "../../Context/GlobalContext";
 import { useEffect } from "react";
 
-export default function Modal({ ModalData, formik,title }) {
+export default function ModalAdd({ ModalData, formik, title }) {
   const { showHiddenModal, closeOpenModalFunc } = UseGlobalContext();
 
   useEffect(() => {
     document.body.style.overflow = showHiddenModal ? "hidden" : "auto";
   }, [showHiddenModal]);
+    
+      if (!showHiddenModal) return null; 
 
   return (
-    <>
-      {showHiddenModal && (
-        <div className={styles.overlay}>
+    <div className={styles.modalArea}>
+          <div className="overlay" onClick={closeOpenModalFunc}></div>
           <div className={styles.modalWrapper}>
             <span
               onClick={closeOpenModalFunc}
@@ -22,7 +23,7 @@ export default function Modal({ ModalData, formik,title }) {
             >
               <CloseIcon />
             </span>
-              <h4 className={styles.title}>{title}</h4>
+            <h4 className={styles.title}>{title}</h4>
             <form className={styles.formWrapper} onSubmit={formik.handleSubmit}>
               <div className={styles.inputListWrapper}>
                 {ModalData.map((item) => (
@@ -39,8 +40,6 @@ export default function Modal({ ModalData, formik,title }) {
               </button>
             </form>
           </div>
-        </div>
-      )}
-    </>
+    </div>
   );
 }
