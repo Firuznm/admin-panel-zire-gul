@@ -5,20 +5,20 @@ import { UseGlobalContext } from "../../Context/GlobalContext";
 import { useEffect } from "react";
 
 export default function ModalAdd({ ModalData, formik, title }) {
-  const { showHiddenModal, closeOpenModalFunc } = UseGlobalContext();
+  const { showHiddenAddModal, closeOpenAddModalFunc } = UseGlobalContext();
 
   useEffect(() => {
-    document.body.style.overflow = showHiddenModal ? "hidden" : "auto";
-  }, [showHiddenModal]);
+    document.body.style.overflow = showHiddenAddModal ? "hidden" : "auto";
+  }, [showHiddenAddModal]);
     
-      if (!showHiddenModal) return null; 
+      if (!showHiddenAddModal) return null; 
 
   return (
     <div className={styles.modalArea}>
-          <div className="overlay" onClick={closeOpenModalFunc}></div>
+          <div className="overlay" onClick={closeOpenAddModalFunc}></div>
           <div className={styles.modalWrapper}>
             <span
-              onClick={closeOpenModalFunc}
+              onClick={closeOpenAddModalFunc}
               className={styles.closeModalIcon}
             >
               <CloseIcon />

@@ -205,9 +205,9 @@ import ModalForDelete from "../../Components/ModalForDelete/ModalForDelete";
 
 export default function User() {
   const {
-    closeOpenModalFunc,
+    closeOpenAddModalFunc,
     editForModalShowHiddenFunc,
-    deleteForModalShowHiddenFunc
+    deleteForModalShowHiddenFunc,
   } = UseGlobalContext();
   const [usersData, setUsersData] = useState([]);
   const [selectedUserData, setSelectedUserData] = useState(null);
@@ -215,6 +215,7 @@ export default function User() {
 
   const rolesData = ["Admin", "Super Admin", "Komecki Admin"];
 
+  // ilk modal acilanda formun (inputlarin) datasi
   const modalData = [
     {
       id: 1,
@@ -255,21 +256,7 @@ export default function User() {
     },
   ];
 
-  const passwordModalFormData = [
-    {
-      id: 1,
-      label: "Password",
-      name: "password",
-      inputType: "password",
-    },
-    {
-      id: 2,
-      label: "Repeat Password",
-      name: "repeatPassword",
-      inputType: "password",
-    },
-  ];
-
+  // edit duymesine click edende acilan formun (inputlarin) datasi
   const modalForEditFormData = [
     {
       id: 1,
@@ -303,6 +290,21 @@ export default function User() {
       inputType: "switch",
     },
   ];
+  // edit duymesine click edende acilan password formun (inputlarin) datasi
+  const passwordModalFormData = [
+    {
+      id: 1,
+      label: "Password",
+      name: "password",
+      inputType: "password",
+    },
+    {
+      id: 2,
+      label: "Repeat Password",
+      name: "repeatPassword",
+      inputType: "password",
+    },
+  ];
 
   //  user elave edemek  üçün formik
   const {
@@ -323,11 +325,11 @@ export default function User() {
       const newUser = { id: Date.now(), ...formValues };
       setUsersData((prev) => [...prev, newUser]);
       addResetForm();
-      closeOpenModalFunc();
+      closeOpenAddModalFunc();
     },
   });
 
-  // edit butonuna click edende  Edit üçün formik 
+  // edit butonuna click edende  Edit üçün formik
   const {
     values: editValues,
     handleChange: editHandleChange,
@@ -355,23 +357,22 @@ export default function User() {
     },
   });
 
-    const {
-      values: passwordValues,
-      handleChange: passwordHandleChange,
-      handleSubmit: passwordHandleSubmit,
-      resetForm: passwordResetForm,
-    } = useFormik({
-      initialValues: {
-        password: "",
-        repeatPassword: "",
-      },
-      onSubmit: (formValues) => {
-         alert(JSON.stringify(formValues, null, 2));
-         passwordResetForm();
-         editForModalShowHiddenFunc();
-      },
-    });
-
+  const {
+    values: passwordValues,
+    handleChange: passwordHandleChange,
+    handleSubmit: passwordHandleSubmit,
+    resetForm: passwordResetForm,
+  } = useFormik({
+    initialValues: {
+      password: "",
+      repeatPassword: "",
+    },
+    onSubmit: (formValues) => {
+      alert(JSON.stringify(formValues, null, 2));
+      passwordResetForm();
+      editForModalShowHiddenFunc();
+    },
+  });
 
   // seçilən user datasini forma doldururam burda
   useEffect(() => {
@@ -457,7 +458,12 @@ export default function User() {
           >
             <EditIcon />
           </span>
-          <span onClick={() => {setDeleteUserId(record.id); deleteForModalShowHiddenFunc() }}>
+          <span
+            onClick={() => {
+              setDeleteUserId(record.id);
+              deleteForModalShowHiddenFunc();
+            }}
+          >
             <DeleteIcon />
           </span>
         </div>
@@ -485,7 +491,6 @@ export default function User() {
       <ModalForEditing
         title={"Edit User"}
         modalForEditFormData={modalForEditFormData}
-        selectedUserData={selectedUserData}
         formik={{
           values: editValues,
           handleChange: editHandleChange,

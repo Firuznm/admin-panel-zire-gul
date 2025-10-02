@@ -49,15 +49,31 @@ export default function Input({ inputData, value, onChange }) {
               </span>
             </div>
           );
-        
         else if (inputData.inputType === "checkbox") {
           return inputData.checkboxData.map((item, index) => (
-            <label  key={index} className={styles.checkedInputWrapper}>
+            <label key={index} className={styles.checkedInputWrapper}>
               <input
                 type="checkbox"
                 name={inputData.name}
                 value={item}
-                onChange={onChange}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    onChange({
+                      target: {
+                        name: inputData.name,
+                        value: [...value, item], 
+                      },
+                    });
+                  } else {
+                    onChange({
+                      target: {
+                        name: inputData.name,
+                        value: value.filter((v) => v !== item), 
+                      },
+                    });
+                  }
+                }}
+                checked={value.includes(item)} 
                 className={styles.checkInp}
               />
               {item}
@@ -74,7 +90,7 @@ export default function Input({ inputData, value, onChange }) {
                   onChange({
                     target: {
                       name: inputData.name,
-                      value: checked
+                      value: checked,
                     },
                   })
                 }

@@ -95,7 +95,7 @@ export default function Customers() {
          key: "actions",
          render: () => (
            <div className="icon-list">
-             <NavLink to="/user-info">
+             <NavLink to="/customer-view">
                <EyeIcon />
              </NavLink>
              <span onClick={closeOpenModalFunc}>

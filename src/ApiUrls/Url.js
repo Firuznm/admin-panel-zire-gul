@@ -1,6 +1,6 @@
 
 const url = {
-    test:"",
+    login:"auth/login-admin",
 }
 
 export default url

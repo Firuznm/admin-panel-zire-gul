@@ -7,7 +7,7 @@ import { UseGlobalContext } from "../../Context/GlobalContext"
 
 export default function SearchAndAdd({ addBtntext, filter }) {
      
-    const { closeOpenModalFunc } = UseGlobalContext();
+    const { closeOpenAddModalFunc } = UseGlobalContext();
     const [showHiddenArea, setShowHiddenArea] = useState(false);
     const [searchValue, setSearchValue] = useState("");
 
@@ -45,7 +45,7 @@ export default function SearchAndAdd({ addBtntext, filter }) {
               }
       </div>
 }
-      <button onClick={closeOpenModalFunc} className={styles.addBtn}>
+      <button onClick={closeOpenAddModalFunc} className={styles.addBtn}>
         <AddIcon /> {addBtntext}
       </button> 
     </div>

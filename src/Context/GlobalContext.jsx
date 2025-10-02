@@ -3,12 +3,12 @@ import { createContext, useContext, useState } from "react";
 const GlobalContext = createContext(null);
 
 const GlobalProvider = ({ children }) => {
-  const [showHiddenModal, setShowHiddenModal] = useState(false);
+  const [showHiddenAddModal, setShowHiddenAddModal] = useState(false);
   const [editForModal, setEditForModal] = useState(false);
   const [deleteForModal, setDeleteForModal] = useState(false)
 
-  const closeOpenModalFunc = () => {
-    setShowHiddenModal(!showHiddenModal);
+  const closeOpenAddModalFunc = () => {
+    setShowHiddenAddModal(!showHiddenAddModal);
   };
 
   const editForModalShowHiddenFunc = () => {
@@ -23,8 +23,8 @@ const GlobalProvider = ({ children }) => {
   return (
     <GlobalContext.Provider
       value={{
-        showHiddenModal,
-        closeOpenModalFunc,
+        showHiddenAddModal,
+        closeOpenAddModalFunc,
         editForModalShowHiddenFunc,
         editForModal,
         deleteForModalShowHiddenFunc,

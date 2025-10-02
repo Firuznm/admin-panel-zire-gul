@@ -3,18 +3,15 @@ import EditIcon from "../../assets/Icons/EditIcon";
 import styles from "./Roles.module.scss";
 import { Table } from "antd";
 import SearchAndAdd from "../../Components/SearchAndAdd/SearchAndAdd";
-import Modal from "../../Components/Modal/Modal";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { UseGlobalContext } from "../../Context/GlobalContext";
-import ModalForAdd from "../../Components/ModalForAdd/ModalForAdd";
-import ModalForEditing from "../../Components/ModalForEditing/ModalForEditing";
-// import ziraGulAdminPanel from "../../Helpers/Helpers";
+import ModalAdd from "../../Components/ModalAdd/ModalAdd";
 
 export default function Roles() {
-  const { closeOpenModalFunc } = UseGlobalContext();
+  const { closeOpenAddModalFunc} = UseGlobalContext();
   const [roles, setRoles] = useState([]);
-  const [editRoles, setEditRoles] = useState(null);
+  const [selectRoles, setSelectRoles] = useState(null);
 
   const selectInputData = ["test 1", "test 2", "test 3", "test 4"];
   const checkboxInputData = ["firuz 1", "firuz 2", "firuz 3", "firuz 4"];
@@ -23,56 +20,60 @@ const modalFormData = [
   {
     id: 1,
     label: "Title",
-    name: "title", 
+    name: "title",
     inputType: "select",
     selectData: selectInputData,
   },
   {
     id: 2,
     label: "Permissions",
-    name: "permis", 
+    name: "permissionIds",
     inputType: "checkbox",
     checkboxData: checkboxInputData,
   },
 ];
 
-
-  const { values, setValues, handleChange, handleSubmit, resetForm } =
+  const { values,setValues, handleChange, handleSubmit, resetForm } =
     useFormik({
       initialValues: {
         title: "",
-        permis: "",
+        permissionIds: [],
       },
       enableReinitialize: true,
       onSubmit: (formValue) => {
-        console.log("roles data", formValue);
-        if (editRoles) {
-          setEditRoles((prev) =>
-            prev.map((role) =>
-              role.id === editRoles.id ? { ...role, ...formValue } : role
-            )
-          );
-          setEditRoles(null);
+        if (selectRoles) {
+         setRoles((prev) =>
+           prev.map((role) =>
+             role.id === selectRoles.id ? { ...role, ...formValue } : role
+           )
+         );
+         setSelectRoles(null);
         } else {
-          const newRole = {
-            id: Date.now(),
-            ...formValue,
-          };
-          setRoles((prev) => [...prev, newRole]);
-        }
+           const newRole = {
+             id: Date.now(),
+             ...formValue,
+           };
+           setRoles((prev) => [...prev, newRole]);
+      }
         resetForm();
-        closeOpenModalFunc();
+        closeOpenAddModalFunc();
       },
     });
 
-  useEffect(() => {
-    if (editRoles) {
-      setValues({
-        title: editRoles.title,
-        permis: editRoles.permis,
-      });
+  const findSelectRole = (id) => {
+    const findRole = roles.find(role => role.id === id);
+    setSelectRoles(findRole)
     }
-  }, [editRoles, setValues]);
+  
+  useEffect(() => {
+    if (selectRoles) {
+      setValues({
+        title: selectRoles.title || "",
+        permissionIds: selectRoles.permissionIds || []
+      });
+  }
+},[selectRoles,setValues])
+  
 
   const columns = [
     {
@@ -90,9 +91,9 @@ const modalFormData = [
       title: "Actions",
       key: "actions",
       width: 20,
-      render: () => (
+      render: (record) => (
         <div className="icon-list">
-          <span onClick={() => console.log("edit iconu click olundu")}>
+          <span onClick={() => {closeOpenAddModalFunc(),findSelectRole(record.id)}}>
             <EditIcon />
           </span>
           <span onClick={() => console.log("delete basildi !!!")}>
@@ -113,14 +114,11 @@ const modalFormData = [
         rowKey="id"
         pagination={{ pageSize: 3 }}
       />
-      <ModalForAdd
+      <ModalAdd
         ModalData={modalFormData}
-        title={editRoles ? "Edit Role" : "Add New Role"}
         formik={{ values, handleChange, handleSubmit }}
-        gridTempCol="1fr"
+        title={selectRoles ? "Edit Roles" : "Add Roles"}
       />
-
-      <ModalForEditing/>
     </div>
   );
 }
