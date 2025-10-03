@@ -19,7 +19,7 @@ export default function ModalForEditing({
   const funcShowHiddenPasswordArea = () => {
     setShowHiddenPasswordArea(!showHiddenPasswordArea);
   };
-  console.log("paswor form data =", passwordModalFormData);
+  // console.log("paswor form data =", passwordModalFormData);
 
   useEffect(() => {
     document.body.style.overflow = editForModal ? "hidden" : "auto";

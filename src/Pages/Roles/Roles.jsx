@@ -1,4 +1,3 @@
-import DeleteIcon from "../../assets/Icons/DeleteIcon";
 import EditIcon from "../../assets/Icons/EditIcon";
 import styles from "./Roles.module.scss";
 import { Table } from "antd";
@@ -7,14 +6,39 @@ import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { UseGlobalContext } from "../../Context/GlobalContext";
 import ModalAdd from "../../Components/ModalAdd/ModalAdd";
+import ziraGulAdminPanel from "../../Helpers/Helpers";
+import url from "../../ApiUrls/Url";
 
 export default function Roles() {
   const { closeOpenAddModalFunc} = UseGlobalContext();
   const [roles, setRoles] = useState([]);
   const [selectRoles, setSelectRoles] = useState(null);
+  const [selectAndCheckboxInpData, setSelectAndCheckboxInpData] = useState({});
+  
+  const getInputsData = async () => {
+    try {
+      const resData = await ziraGulAdminPanel.api().get(url.rolesInputData);
+            setSelectAndCheckboxInpData(resData.data)
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-  const selectInputData = ["test 1", "test 2", "test 3", "test 4"];
-  const checkboxInputData = ["firuz 1", "firuz 2", "firuz 3", "firuz 4"];
+  const getAllRoles = async () => {
+    try {
+      const resData = await ziraGulAdminPanel.api().get(url.getAllRoles);
+      setRoles(resData.data)
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+  console.log("all roles = ", roles);
+  
+  useEffect(() => {
+    getInputsData();
+    getAllRoles();
+  },[])
 
 const modalFormData = [
   {
@@ -22,14 +46,14 @@ const modalFormData = [
     label: "Title",
     name: "title",
     inputType: "select",
-    selectData: selectInputData,
+    selectData: selectAndCheckboxInpData?.roles,
   },
   {
     id: 2,
     label: "Permissions",
     name: "permissionIds",
     inputType: "checkbox",
-    checkboxData: checkboxInputData,
+    checkboxData: selectAndCheckboxInpData?.permissions,
   },
 ];
 
@@ -40,23 +64,24 @@ const modalFormData = [
         permissionIds: [],
       },
       enableReinitialize: true,
-      onSubmit: (formValue) => {
-        if (selectRoles) {
-         setRoles((prev) =>
-           prev.map((role) =>
-             role.id === selectRoles.id ? { ...role, ...formValue } : role
-           )
-         );
-         setSelectRoles(null);
-        } else {
-           const newRole = {
-             id: Date.now(),
-             ...formValue,
-           };
-           setRoles((prev) => [...prev, newRole]);
-      }
-        resetForm();
-        closeOpenAddModalFunc();
+      onSubmit: async (formValue) => {
+        console.log("form val=", formValue);
+        
+           try {
+             if (selectRoles) {
+               await ziraGulAdminPanel
+                 .api()
+                 .put(url.roleUpdate(selectRoles.id), formValue);
+             } else {
+               await ziraGulAdminPanel.api().post(url.roleCreate, formValue);
+             }
+             await getAllRoles();
+             resetForm();
+             setSelectRoles(null);
+             closeOpenAddModalFunc()
+           } catch (error) {
+            console.log(error);
+           }
       },
     });
 
@@ -96,9 +121,6 @@ const modalFormData = [
           <span onClick={() => {closeOpenAddModalFunc(),findSelectRole(record.id)}}>
             <EditIcon />
           </span>
-          <span onClick={() => console.log("delete basildi !!!")}>
-            <DeleteIcon />
-          </span>
         </div>
       ),
     },
@@ -112,7 +134,7 @@ const modalFormData = [
         columns={columns}
         dataSource={roles}
         rowKey="id"
-        pagination={{ pageSize: 3 }}
+        pagination={{ pageSize: 5 }}
       />
       <ModalAdd
         ModalData={modalFormData}
