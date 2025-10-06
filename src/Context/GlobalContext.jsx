@@ -17,8 +17,6 @@ const GlobalProvider = ({ children }) => {
 
   const deleteForModalShowHiddenFunc = () => {
     setDeleteForModal(!deleteForModal)
-    console.log("delete cliked !!!");
-    
   }
   return (
     <GlobalContext.Provider

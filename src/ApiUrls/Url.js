@@ -4,8 +4,10 @@ const url = {
     rolesInputData: "internal/roles/available",
     getAllRoles : "internal/roles",
     roleCreate:"internal/roles",
-    roleUpdate:(id)=>`internal/roles/${id}`
-    
+    roleUpdate:(roleId)=>`internal/roles/${roleId}`,
+    getAllUsers: "internal/users",
+    createUser: "internal/users/",
+    updateUser: (userRoleId) => `internal/users/${userRoleId}`,
 }
 
 export default url

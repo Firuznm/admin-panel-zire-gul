@@ -10,6 +10,9 @@ html{
 a{
   text-decoration: none;
 }
+li{
+  list-style: none;
+}
 h4{
   margin: 0 !important;
   padding: 0;
@@ -83,6 +86,10 @@ h4{
     }
     .ant-switch-checked{
       background: rgba(52, 199, 89, 1) !important;
+    }
+/* and design paginationu islemirem */
+    .ant-table-pagination.ant-pagination{
+      display: none !important;
     }
 /* @media only screen and (max-width: 1250px) {
 .ant-table-container table {

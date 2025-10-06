@@ -1,219 +1,60 @@
-// import { Table } from "antd";
-// import DeleteIcon from "../../assets/Icons/DeleteIcon";
-// import EditIcon from "../../assets/Icons/EditIcon";
-// import styles from "./User.module.scss";
-// import SearchAndAdd from "../../Components/SearchAndAdd/SearchAndAdd";
-// import Modal from "../../Components/Modal/Modal";
-// import { useFormik } from "formik";
-// import { useEffect, useState } from "react";
-// import { UseGlobalContext } from "../../Context/GlobalContext";
-// import ModalForEditing from "../../Components/ModalForEditing/ModalForEditing";
-
-// export default function User() {
-//   const { closeOpenModalFunc, editForModalShowHiddenFunc } = UseGlobalContext();
-//   const [users, setUsers] = useState([]);
-//   const [editUser, setEditUser] = useState(null);
-//   const rolesData = ["Admin", "Super Admin", "Komecki Admin"];
-
-//   const modalData = [
-//     {
-//       id: 1,
-//       label: "Full Name",
-//       name: "firstName",
-//       inputType: "text",
-//     },
-//     {
-//       id: 2,
-//       label: "Last Name",
-//       name: "lastName",
-//       inputType: "text",
-//     },
-//     {
-//       id: 3,
-//       label: "Email",
-//       name: "email",
-//       inputType: "text",
-//     },
-//     {
-//       id: 4,
-//       label: "Password",
-//       name: "password",
-//       inputType: "password",
-//     },
-//     {
-//       id: 5,
-//       label: "Roles",
-//       name: "roles",
-//       inputType: "select",
-//       selectData: rolesData,
-//     },
-//     {
-//       id: 6,
-//       label: "Status",
-//       name: "status",
-//       inputType: "switch",
-//     },
-//   ];
-
-//   const { values, setValues, handleChange, handleSubmit, resetForm } =
-//     useFormik({
-//       initialValues: {
-//         firstName: "",
-//         lastName:"",
-//         email: "",
-//         password:"",
-//         status: false,
-//         roles: "",
-//       },
-//       enableReinitialize: true,
-//       onSubmit: (formValues) => {
-//         if (editUser) {
-//           setUsers((prev) =>
-//             prev.map((user) =>
-//               user.id === editUser.id ? { ...user, ...formValues } : user
-//             )
-//           );
-//           setEditUser(null);
-//         } else {
-//           const newUser = {
-//             id: Date.now(),
-//             ...formValues,
-//           };
-//           setUsers((prev) => [...prev, newUser]);
-//         }
-//         resetForm();
-//         closeOpenModalFunc();
-//       },
-//     });
-
-//   useEffect(() => {
-//     if (editUser) {
-//       setValues({
-//         firstName: editUser.firstName || "",
-//         lastName: editUser.lastName || "",
-//         email: editUser.email || "",
-//         status: editUser.status || false,
-//         roles: editUser.roles || "",
-//       });
-//     }
-//   }, [editUser, setValues]);
-
-//   const columns = [
-//     {
-//       title: "#Id",
-//       dataIndex: "id",
-//       key: "id",
-//       width: 60,
-//     },
-//     {
-//       title: "Full Name",
-//       key: "fullName",
-//       render: (record) =>
-//         `${record.firstName || ""} ${record.lastName || ""}`,
-//     },
-//     {
-//       title: "Email",
-//       dataIndex: "email",
-//       key: "email",
-//     },
-//     {
-//       title: "Status",
-//       dataIndex: "status",
-//       key: "status",
-//       width: 150,
-//       render: (status) => (
-//         <span
-//           className={`${
-//             status ? styles.activeStatus : styles.noActiveStatus
-//           }`}
-//         >
-//           {status ? "Active" : "DeActive"}
-//         </span>
-//       ),
-//     },
-//     {
-//       title: "Roles",
-//       dataIndex: "roles",
-//       key: "roles",
-//     },
-//     {
-//       title: "Last Login",
-//       dataIndex: "lastLogin",
-//       key: "lastLogin",
-//     },
-//     {
-//       title: "Created At",
-//       dataIndex: "createdAt",
-//       key: "createdAt",
-//     },
-//     {
-//       title: "Actions",
-//       key: "actions",
-//       render: (record) => (
-//         <div className="icon-list">
-//           <span
-//             onClick={() => {
-//               // setEditUser(record);
-//               // closeOpenModalFunc();
-//               editForModalShowHiddenFunc()
-//             }}
-//           >
-//             <EditIcon />
-//           </span>
-//           <span
-//             onClick={() =>
-//               setUsers((prev) => prev.filter((user) => user.id !== record.id))
-//             }
-//           >
-//             <DeleteIcon />
-//           </span>
-//         </div>
-//       ),
-//     },
-//   ];
-
-//   return (
-//     <div className={styles.userPage}>
-//       <SearchAndAdd addBtntext={"Add New User"} filter={false} />
-//       <Table
-//         columns={columns}
-//         dataSource={users}
-//         rowKey="id"
-//         pagination={{ pageSize: 8 }}
-//       />
-//       <Modal
-//         ModalData={modalData}
-//         title={"Add New User"}
-//         formik={{ values, handleChange, handleSubmit }}
-//       />
-//       <ModalForEditing title={"Edit for User"}/>
-//     </div>
-//   );
-// }
-
 import { Table } from "antd";
-import DeleteIcon from "../../assets/Icons/DeleteIcon";
 import EditIcon from "../../assets/Icons/EditIcon";
 import styles from "./User.module.scss";
 import SearchAndAdd from "../../Components/SearchAndAdd/SearchAndAdd";
 import { useFormik } from "formik";
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { UseGlobalContext } from "../../Context/GlobalContext";
 import ModalForEditing from "../../Components/ModalForEditing/ModalForEditing";
 import ModalForAdd from "../../Components/ModalForAdd/ModalForAdd";
-import ModalForDelete from "../../Components/ModalForDelete/ModalForDelete";
+import ziraGulAdminPanel from "../../Helpers/Helpers";
+import url from "../../ApiUrls/Url";
+import moment from "moment";
+import Pagination from "../../Components/Pagination/Pagination";
+import { useSearchParams } from "react-router-dom";
 
 export default function User() {
-  const {
-    closeOpenAddModalFunc,
-    editForModalShowHiddenFunc,
-    deleteForModalShowHiddenFunc,
-  } = UseGlobalContext();
+  const { closeOpenAddModalFunc, editForModalShowHiddenFunc } =
+    UseGlobalContext();
   const [usersData, setUsersData] = useState([]);
   const [selectedUserData, setSelectedUserData] = useState(null);
-  const [deleteUserId, setDeleteUserId] = useState(null);
+  const [userRoleDatas, setUserRoleDatas] = useState([]);
+  const [searchParams] = useSearchParams();
+  const currentPage = Number(searchParams.get("page")) || 1;
 
-  const rolesData = ["Admin", "Super Admin", "Komecki Admin"];
+  const getUserRoleDatas = async () => {
+    try {
+      const resData = await ziraGulAdminPanel.api().get(url.getAllRoles);
+      setUserRoleDatas(resData.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getAllUsersData = async (page = 1) => {
+    try {
+      const resData = await ziraGulAdminPanel
+        .api()
+        .get(`${url.getAllUsers}?page=${page}&perPage=6`);
+      setUsersData(resData.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getUserRoleDatas();
+    getAllUsersData(currentPage);
+  }, [currentPage]);
+
+  console.log("test user data=", usersData);
+  console.log("select user data,==", selectedUserData);
+
+  // hansi id li userde deyisiklik etmek islediyimizi tapiriq
+  const findSelectedUserData = (id) => {
+    const findSelectUser = usersData.data.find((user) => user.id === id);
+    setSelectedUserData(findSelectUser);
+  };
 
   // ilk modal acilanda formun (inputlarin) datasi
   const modalData = [
@@ -246,7 +87,7 @@ export default function User() {
       label: "Roles",
       name: "roles",
       inputType: "select",
-      selectData: rolesData,
+      selectData: userRoleDatas.map((item) => item.title),
     },
     {
       id: 6,
@@ -281,7 +122,7 @@ export default function User() {
       label: "Roles",
       name: "roles",
       inputType: "select",
-      selectData: rolesData,
+      selectData: userRoleDatas.map((item) => item.title),
     },
     {
       id: 6,
@@ -305,7 +146,6 @@ export default function User() {
       inputType: "password",
     },
   ];
-
   //  user elave edemek  üçün formik
   const {
     values: addValues,
@@ -318,17 +158,30 @@ export default function User() {
       lastName: "",
       email: "",
       password: "",
-      roles: "",
+      roles: [],
       status: false,
     },
-    onSubmit: (formValues) => {
-      const newUser = { id: Date.now(), ...formValues };
-      setUsersData((prev) => [...prev, newUser]);
+    onSubmit: async (formValues) => {
+      try {
+        // burda userin roluna gore hemin rolun id-sini tapib api gonderirem
+        const selectedRole = userRoleDatas.find(
+          (role) => role.title === formValues.roles
+        );
+        const payload = {
+          ...formValues,
+          roleIds: selectedRole ? [selectedRole.id] : [],
+          isActive: formValues.status,
+        };
+
+        await ziraGulAdminPanel.api().post(url.createUser, payload);
+        getAllUsersData();
+      } catch (error) {
+        console.log(error);
+      }
       addResetForm();
       closeOpenAddModalFunc();
     },
   });
-
   // edit butonuna click edende  Edit üçün formik
   const {
     values: editValues,
@@ -341,16 +194,26 @@ export default function User() {
       firstName: "",
       lastName: "",
       email: "",
-      roles: "",
+      roles: [],
       status: false,
     },
     enableReinitialize: true,
-    onSubmit: (formValues) => {
-      setUsersData((prev) =>
-        prev.map((u) =>
-          u.id === selectedUserData.id ? { ...u, ...formValues } : u
-        )
-      );
+    onSubmit: async (formValues) => {
+      try {
+        const selectedRoles = userRoleDatas.filter((r) =>
+          formValues.roles.includes(r.title)
+        );
+        const payload = {
+          ...formValues,
+          id: selectedUserData.id,
+          roleIds: selectedRoles.map((r) => r.id),
+          isActive: formValues.status,
+        };
+        await ziraGulAdminPanel.api().put(url.updateUser(payload.id), payload);
+      } catch (error) {
+        console.log(error);
+      }
+      getAllUsersData(currentPage);
       editResetForm();
       setSelectedUserData(null);
       editForModalShowHiddenFunc();
@@ -381,30 +244,17 @@ export default function User() {
         firstName: selectedUserData.firstName || "",
         lastName: selectedUserData.lastName || "",
         email: selectedUserData.email || "",
-        roles: selectedUserData.roles || "",
-        status: selectedUserData.status || false,
+        roles: selectedUserData.roles?.[0]?.title || "",
+        status: selectedUserData.isActive || false,
       });
     }
   }, [selectedUserData, setEditValues]);
 
-  // hansi id li userde deyisiklik etmek islediyimizi tapiriq
-  const findSelectedUserData = (id) => {
-    const findSelectUser = usersData.find((user) => user.id === id);
-    setSelectedUserData(findSelectUser);
-  };
-
-  const deleteTableUser = () => {
-    if (deleteUserId) {
-      setUsersData((prev) => prev.filter((user) => user.id !== deleteUserId));
-      setDeleteUserId(null);
-      deleteForModalShowHiddenFunc();
-    }
-  };
   const columns = [
     {
       title: "#Id",
-      dataIndex: "id",
-      key: "id",
+      dataIndex: "counterId",
+      key: "counterId",
       width: 60,
     },
     {
@@ -419,14 +269,16 @@ export default function User() {
     },
     {
       title: "Status",
-      dataIndex: "status",
+      dataIndex: "isActive",
       key: "status",
       width: 150,
-      render: (status) => (
+      render: (isActive) => (
         <span
-          className={`${status ? styles.activeStatus : styles.noActiveStatus}`}
+          className={`${
+            isActive ? styles.activeStatus : styles.noActiveStatus
+          }`}
         >
-          {status ? "Active" : "DeActive"}
+          {isActive ? "Active" : "DeActive"}
         </span>
       ),
     },
@@ -434,16 +286,23 @@ export default function User() {
       title: "Roles",
       dataIndex: "roles",
       key: "roles",
+      render: (roles) => roles.map((role) => role.title).join(", "),
     },
     {
       title: "Last Login",
-      dataIndex: "lastLogin",
-      key: "lastLogin",
+      dataIndex: "lastLoginAt",
+      key: "lastLoginAt",
+      render: (dateString) => {
+        return dateString ? moment(dateString).format("DD MMM YYYY") : "-";
+      },
     },
     {
       title: "Created At",
       dataIndex: "createdAt",
       key: "createdAt",
+      render: (dateString) => {
+        return dateString ? moment(dateString).format("DD MMM YYYY") : "-";
+      },
     },
     {
       title: "Actions",
@@ -458,14 +317,6 @@ export default function User() {
           >
             <EditIcon />
           </span>
-          <span
-            onClick={() => {
-              setDeleteUserId(record.id);
-              deleteForModalShowHiddenFunc();
-            }}
-          >
-            <DeleteIcon />
-          </span>
         </div>
       ),
     },
@@ -476,9 +327,9 @@ export default function User() {
       <SearchAndAdd addBtntext={"Add New User"} filter={false} />
       <Table
         columns={columns}
-        dataSource={usersData}
+        dataSource={usersData?.data}
         rowKey="id"
-        pagination={{ pageSize: 8 }}
+        pagination={false}
       />
       <ModalForAdd
         ModalData={modalData}
@@ -503,8 +354,7 @@ export default function User() {
         }}
         passwordModalFormData={passwordModalFormData}
       />
-      <ModalForDelete deleteTableUser={deleteTableUser} />
+      <Pagination func={getAllUsersData} paginationData={usersData.meta} />
     </div>
   );
 }
-

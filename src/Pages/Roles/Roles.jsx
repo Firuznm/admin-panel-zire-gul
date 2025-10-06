@@ -10,95 +10,91 @@ import ziraGulAdminPanel from "../../Helpers/Helpers";
 import url from "../../ApiUrls/Url";
 
 export default function Roles() {
-  const { closeOpenAddModalFunc} = UseGlobalContext();
+  const { closeOpenAddModalFunc } = UseGlobalContext();
   const [roles, setRoles] = useState([]);
-  const [selectRoles, setSelectRoles] = useState(null);
+  const [selectedRole, setSelectedRole] = useState(null);
   const [selectAndCheckboxInpData, setSelectAndCheckboxInpData] = useState({});
-  
+
   const getInputsData = async () => {
     try {
       const resData = await ziraGulAdminPanel.api().get(url.rolesInputData);
-            setSelectAndCheckboxInpData(resData.data)
+      setSelectAndCheckboxInpData(resData.data);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const getAllRoles = async () => {
     try {
       const resData = await ziraGulAdminPanel.api().get(url.getAllRoles);
-      setRoles(resData.data)
+      setRoles(resData.data);
     } catch (error) {
       console.log(error);
-      
     }
-  }
-  console.log("all roles = ", roles);
-  
+  };
+
   useEffect(() => {
     getInputsData();
     getAllRoles();
-  },[])
+  }, []);
 
-const modalFormData = [
-  {
-    id: 1,
-    label: "Title",
-    name: "title",
-    inputType: "select",
-    selectData: selectAndCheckboxInpData?.roles,
-  },
-  {
-    id: 2,
-    label: "Permissions",
-    name: "permissionIds",
-    inputType: "checkbox",
-    checkboxData: selectAndCheckboxInpData?.permissions,
-  },
-];
+  const modalFormData = [
+    {
+      id: 1,
+      label: "Title",
+      name: "title",
+      inputType: "select",
+      selectData: selectAndCheckboxInpData?.roles,
+    },
+    {
+      id: 2,
+      label: "Permissions",
+      name: "permissions",
+      inputType: "checkbox",
+      checkboxData: selectAndCheckboxInpData?.permissions,
+    },
+  ];
 
-  const { values,setValues, handleChange, handleSubmit, resetForm } =
+  const { values, setValues, handleChange, handleSubmit, resetForm } =
     useFormik({
       initialValues: {
         title: "",
-        permissionIds: [],
+        permissions: [],
       },
       enableReinitialize: true,
       onSubmit: async (formValue) => {
-        console.log("form val=", formValue);
-        
-           try {
-             if (selectRoles) {
-               await ziraGulAdminPanel
-                 .api()
-                 .put(url.roleUpdate(selectRoles.id), formValue);
-             } else {
-               await ziraGulAdminPanel.api().post(url.roleCreate, formValue);
-             }
-             await getAllRoles();
-             resetForm();
-             setSelectRoles(null);
-             closeOpenAddModalFunc()
-           } catch (error) {
-            console.log(error);
-           }
+        try {
+          if (selectedRole) {
+            await ziraGulAdminPanel
+              .api()
+              .put(url.roleUpdate(selectedRole.id), formValue);
+          } else {
+            await ziraGulAdminPanel.api().post(url.roleCreate, formValue);
+          }
+          await getAllRoles();
+          resetForm();
+          setSelectedRole(null);
+          closeOpenAddModalFunc();
+        } catch (error) {
+          console.log(error);
+        }
       },
     });
 
-  const findSelectRole = (id) => {
-    const findRole = roles.find(role => role.id === id);
-    setSelectRoles(findRole)
-    }
-  
+  const findSelectedRole = (id) => {
+    const findRole = roles.find((role) => role.id === id);
+    findRole.permissions = findRole.permissions.map((p) => p.title);
+    setSelectedRole(findRole);
+  };
+
   useEffect(() => {
-    if (selectRoles) {
+    if (selectedRole) {
       setValues({
-        title: selectRoles.title || "",
-        permissionIds: selectRoles.permissionIds || []
+        title: selectedRole.title || "",
+        permissions: selectedRole.permissions || [],
       });
-  }
-},[selectRoles,setValues])
-  
+    }
+  }, [selectedRole, setValues]);
 
   const columns = [
     {
@@ -118,7 +114,11 @@ const modalFormData = [
       width: 20,
       render: (record) => (
         <div className="icon-list">
-          <span onClick={() => {closeOpenAddModalFunc(),findSelectRole(record.id)}}>
+          <span
+            onClick={() => {
+              closeOpenAddModalFunc(), findSelectedRole(record.id);
+            }}
+          >
             <EditIcon />
           </span>
         </div>
@@ -139,7 +139,8 @@ const modalFormData = [
       <ModalAdd
         ModalData={modalFormData}
         formik={{ values, handleChange, handleSubmit }}
-        title={selectRoles ? "Edit Roles" : "Add Roles"}
+        title={selectedRole ? "Edit Roles" : "Add Roles"}
+        gridTempCol={"1fr"}
       />
     </div>
   );

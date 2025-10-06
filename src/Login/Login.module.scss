@@ -1,20 +1,25 @@
-.loginPage{
-    width: 100%;
+.loginPage {
+  width: 100%;
+  display: flex;
+  .loginLeft {
+    background-color: rgba(255, 255, 255, 1);
+    width: 50%;
     height: 100vh;
-    background-color: rgba(221, 221, 221, 1);
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    .loginForm{
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        width: 400px;
-        height: fit-content;
-        padding: 20px 30px;
-        background-color: white;
-        border-radius: 12px;
-        .sendBtn{
+    padding: 0 100px;
+    .zireLogo {
+      margin: 0 auto 20px 0;
+    }
+    .loginForm {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      border-radius: 12px;
+      .sendBtn {
         font-weight: 500;
         font-size: 16px;
         cursor: pointer;
@@ -24,6 +29,21 @@
         border-radius: 12px;
         color: white;
         background-color: rgba(66, 180, 47, 1);
-        }
+      }
     }
+    .privacyPolicy{
+        margin-top: 20px;
+        font-size: 16px;
+        font-weight: 500;
+        color: rgba(161, 161, 161, 1);
+    }
+  }
+  .loginRight {
+    background-color: rgba(66, 180, 47, 1);
+    width: 50%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }

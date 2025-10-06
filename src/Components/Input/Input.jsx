@@ -5,16 +5,17 @@ import { useState } from "react";
 import HiddenParolIcon from "../../assets/Icons/HiddenParolIcon";
 
 export default function Input({ inputData, value, onChange }) {
-
   const [showHiddenPassword, setShowHiddenPassword] = useState(false);
 
   const funcShowHiddenPassword = () => {
-    setShowHiddenPassword(!showHiddenPassword)
-  }
+    setShowHiddenPassword(!showHiddenPassword);
+  };
 
   return (
     <div className={styles.imputWrapper}>
-   {inputData.inputType !== "switch" && <label htmlFor={inputData.id}>{inputData.label}</label>}
+      {inputData.inputType !== "switch" && (
+        <label htmlFor={inputData.id}>{inputData.label}</label>
+      )}
       {(() => {
         if (inputData.inputType === "select") {
           return (
@@ -24,6 +25,9 @@ export default function Input({ inputData, value, onChange }) {
               onChange={onChange}
               className={styles.selectInp}
             >
+              <option value="" disabled>
+                Seçim edin
+              </option>
               {inputData?.selectData?.map((option, index) => (
                 <option value={option} key={index}>
                   {option}
@@ -50,8 +54,8 @@ export default function Input({ inputData, value, onChange }) {
             </div>
           );
         else if (inputData.inputType === "checkbox") {
-          return inputData.checkboxData.map((item, index) => (
-            <label key={index} className={styles.checkedInputWrapper}>
+          return inputData.checkboxData.map((item) => (
+            <label key={item.id} className={styles.checkedInputWrapper}>
               <input
                 type="checkbox"
                 name={inputData.name}
@@ -61,19 +65,19 @@ export default function Input({ inputData, value, onChange }) {
                     onChange({
                       target: {
                         name: inputData.name,
-                        value: [...value, item], 
+                        value: [...value, item],
                       },
                     });
                   } else {
                     onChange({
                       target: {
                         name: inputData.name,
-                        value: value.filter((v) => v !== item), 
+                        value: value.filter((v) => v !== item),
                       },
                     });
                   }
                 }}
-                checked={value.includes(item)} 
+                checked={value.includes(item)}
                 className={styles.checkInp}
               />
               {item}

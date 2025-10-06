@@ -4,6 +4,8 @@ import styles from "./Login.module.scss";
 import {useNavigate } from "react-router-dom"; 
 import ziraGulAdminPanel from "../Helpers/Helpers";
 import url from "../ApiUrls/Url";
+import zireLogo from "../assets/Images/ziregulLogo.png";
+import rigthLogo from "../assets/Images/loginRightLogo.png"
 
 export default function Login() {
   const navigate = useNavigate();
@@ -36,23 +38,34 @@ export default function Login() {
   });
 
   const loginFormData = [
-    { id: 1, label: "Email", name: "email", inputType: "email" },
+    { id: 1, label: "Email Address ", name: "email", inputType: "email" },
     { id: 2, label: "Password", name: "password", inputType: "password" },
   ];
 
   return (
     <div className={styles.loginPage}>
-      <form onSubmit={handleSubmit} className={styles.loginForm}>
-        {loginFormData.map((inputData) => (
-          <Input
-            key={inputData.id}
-            inputData={inputData}
-            value={values[inputData.name]}
-            onChange={handleChange}
-          />
-        ))}
-        <button className={styles.sendBtn} type="submit">Gonder</button>
-      </form>
+      <div className={styles.loginLeft}>
+        <img src={zireLogo} alt="" className={styles.zireLogo} />
+        <form onSubmit={handleSubmit} className={styles.loginForm}>
+          {loginFormData.map((inputData) => (
+            <Input
+              key={inputData.id}
+              inputData={inputData}
+              value={values[inputData.name]}
+              onChange={handleChange}
+            />
+          ))}
+          <button className={styles.sendBtn} type="submit">
+            Gonder
+          </button>
+        </form>
+        <p className={styles.privacyPolicy}>
+          2025 ©Zirə Gülçülük. Bütün hüquqlar qorunur.
+        </p>
+      </div>
+      <div className={styles.loginRight}>
+        <img src={rigthLogo} alt="" />
+      </div>
     </div>
   );
 }
