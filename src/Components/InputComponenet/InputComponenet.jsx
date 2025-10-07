@@ -1,10 +1,11 @@
 import { Switch } from "antd";
-import styles from "./Input.module.scss";
+import styles from "./InputComponenet.module.scss";
 import ShowParolIcon from "../../assets/Icons/ShowParolIcon";
 import { useState } from "react";
 import HiddenParolIcon from "../../assets/Icons/HiddenParolIcon";
 
-export default function Input({ inputData, value, onChange }) {
+
+export default function InputComponenet({inputData}) {
   const [showHiddenPassword, setShowHiddenPassword] = useState(false);
 
   const funcShowHiddenPassword = () => {
@@ -21,11 +22,11 @@ export default function Input({ inputData, value, onChange }) {
           return (
             <select
               name={inputData.name}
-              value={value}
-              onChange={onChange}
+              value={inputData.inpValue}
+              onChange={inputData.onChange}
               className={styles.selectInp}
             >
-              <option value="">
+              <option value="" disabled>
                 Seçim edin
               </option>
               {inputData?.selectData?.map((option, index) => (
@@ -41,9 +42,9 @@ export default function Input({ inputData, value, onChange }) {
               <input
                 name={inputData.name}
                 type={`${showHiddenPassword ? "text" : "password"}`}
-                value={value ?? ""}
+                value={inputData.inpValue}
                 className={styles.input}
-                onChange={onChange}
+                onChange={inputData.onChange}
               />
               <span
                 onClick={funcShowHiddenPassword}
@@ -53,49 +54,29 @@ export default function Input({ inputData, value, onChange }) {
               </span>
             </div>
           );
-        else if (inputData.inputType === "checkbox") {
-          return inputData.checkboxData.map((item) => (
-            <label key={item.id} className={styles.checkedInputWrapper}>
-              <input
-                type="checkbox"
-                name={inputData.name}
-                value={item}
-                onChange={(e) => {
-                  if (e.target.checked) {
-                    onChange({
-                      target: {
-                        name: inputData.name,
-                        value: [...value, item],
-                      },
-                    });
-                  } else {
-                    onChange({
-                      target: {
-                        name: inputData.name,
-                        value: value.filter((v) => v !== item),
-                      },
-                    });
-                  }
-                }}
-                checked={value.includes(item)}
-                className={styles.checkInp}
-              />
-              {item}
-              <span className={styles.checkMark}></span>
-            </label>
-          ));
-        } else if (inputData.inputType === "switch") {
+        // else if (inputData.inputType === "checkbox") {
+        //   return inputData.checkboxData.map((item) => (
+        //     <label key={item.id} className={styles.checkedInputWrapper}>
+        //       <input
+        //         type="checkbox"
+        //         name={inputData.name}
+        //         value={inputData.inpValue}
+        //         className={styles.checkInp}
+        //       />
+        //       {item}
+        //       <span className={styles.checkMark}></span>
+        //     </label>
+        //   ));
+        // }
+        else if (inputData.inputType === "switch") {
           return (
             <div className={styles.switchInput}>
               <label htmlFor={inputData.id}>{inputData.label}</label>
               <Switch
-                checked={value}
+                checked={inputData.inpValue}
                 onChange={(checked) =>
-                  onChange({
-                    target: {
-                      name: inputData.name,
-                      value: checked,
-                    },
+                  inputData.onChange({
+                    target: { name: inputData.name, value: checked },
                   })
                 }
               />
@@ -107,8 +88,8 @@ export default function Input({ inputData, value, onChange }) {
               name={inputData.name}
               type={inputData.inputType}
               className={styles.input}
-              value={value}
-              onChange={onChange}
+                value={inputData.inpValue}
+              onChange={inputData.onChange}
             />
           );
         }

@@ -99,9 +99,9 @@ export default function Roles() {
   const columns = [
     {
       title: "#Id",
-      dataIndex: "id",
-      key: "id",
-      width: 120,
+      dataIndex: "counterId",
+      key: "counterId",
+      width: 10,
     },
     {
       title: "Title",
@@ -128,13 +128,12 @@ export default function Roles() {
 
   return (
     <div className={styles.rulesPage}>
-      <SearchAndAdd addBtntext={"Add New User"} filter={false} />
+      <SearchAndAdd addBtntext={"Add New User"} filter={false} addBtn={true}/>
 
       <Table
         columns={columns}
         dataSource={roles}
         rowKey="id"
-        pagination={{ pageSize: 5 }}
       />
       <ModalAdd
         ModalData={modalFormData}

@@ -9,11 +9,121 @@ import styles from "./Customers.module.scss"
 import { NavLink } from "react-router-dom";
 import SearchAndAdd from "../../Components/SearchAndAdd/SearchAndAdd";
 import { UseGlobalContext } from "../../Context/GlobalContext";
-import Modal from "../../Components/Modal/Modal";
+import ModalInfoAndPassword from "../../Components/ModalInfoAndPassword/ModalInfoAndPassword";
+import { useFormik } from "formik";
+import { useEffect, useState } from "react";
+import ziraGulAdminPanel from "../../Helpers/Helpers";
+import url from "../../ApiUrls/Url";
 
 export default function Customers() {
     
-  const {closeOpenModalFunc} = UseGlobalContext()
+  const { editForModalShowHiddenFunc } = UseGlobalContext();
+  const [allCustomersData, setAllCustomersData] = useState([]);
+
+  const getAllCustomersData = async () => {
+    try {
+      const resData = await ziraGulAdminPanel.api().get(url.allCustomers);
+      setAllCustomersData(resData.data)
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    getAllCustomersData()  
+  }, [])
+  console.log("all custemers data=",allCustomersData);
+  
+   const { values, handleChange, handleSubmit, resetForm } = useFormik({
+     initialValues: {
+       firstName: "",
+       lastName: "",
+       phone: "",
+       email: "",
+       gender: "",
+       birthdate: "",
+       blocked: false,
+     },
+     onSubmit: (formValues) => {
+       alert(JSON.stringify(formValues, null, 2));
+       resetForm();
+       editForModalShowHiddenFunc();
+     },
+   });
+  
+  const customerEditFormData = {
+    userInfoEditForm: [
+      {
+        id: 1,
+        label: "First Name",
+        name: "firstName",
+        inputType: "text",
+        inpValue: values.lastName,
+        onChange: handleChange,
+      },
+      {
+        id: 2,
+        label: "Last Name",
+        name: "lastName",
+        inputType: "text",
+        inpValue: values.lastName,
+        onChange: handleChange,
+      },
+      {
+        id: 3,
+        label: "Phone",
+        name: "phone",
+        inputType: "number",
+        inpValue: values.phone,
+        onChange: handleChange,
+      },
+      {
+        id: 4,
+        label: "Email",
+        name: "email",
+        inputType: "email",
+        inpValue: values.email,
+        onChange: handleChange,
+      },
+      {
+        id: 5,
+        label: "Gender",
+        name: "gender",
+        inputType: "select",
+        selectData: ["Female", "Male"],
+        inpValue: values.gender,
+        onChange: handleChange,
+      },
+      {
+        id: 6,
+        label: "Birthdate",
+        name: "birthdate",
+        inputType: "date",
+        inpValue: values.birthdate,
+        onChange: handleChange,
+      },
+      {
+        id: 8,
+        label: "Blocked",
+        name: "blocked",
+        inputType: "switch",
+        inpValue: values.blocked,
+        onChange: handleChange,
+      },
+    ],
+    userPasswordEditFormData: [
+      {
+        id: 1,
+        label: "Password",
+        name: "password",
+      },
+      {
+        id: 2,
+        label: "Repeat Password",
+        name: "repeatPassword",
+      },
+    ],
+  };
 
      const columns = [
        {
@@ -48,7 +158,6 @@ export default function Customers() {
          title: "Verified",
          dataIndex: "verified",
          key: "verified",
-         //  width: 90,
          render: (value) =>
            value === "yes" ? (
              <span className="yes-icon">
@@ -66,7 +175,6 @@ export default function Customers() {
          title: "Blocked",
          dataIndex: "blocked",
          key: "blocked",
-         //  width: 90,
          render: (value) =>
            value === "yes" ? (
              <span className="yes-icon">
@@ -98,7 +206,7 @@ export default function Customers() {
              <NavLink to="/customer-view">
                <EyeIcon />
              </NavLink>
-             <span onClick={closeOpenModalFunc}>
+             <span onClick={editForModalShowHiddenFunc}>
                <EditIcon />
              </span>
              <span onClick={() => console.log("delete basildi !!!")}>
@@ -110,14 +218,14 @@ export default function Customers() {
      ];
   return (
     <div className={styles.customersPage}>
-      <SearchAndAdd addBtntext={"Add New Customers"} filter={true} />
+      <SearchAndAdd addBtntext={"Add New Customers"} filter={true} addBtn = {false} />
       <Table
         columns={columns}
         dataSource={CustomersTableBodyData}
         rowKey="id"
         pagination={{ pageSize: 10 }}
       />
-      <Modal/>
+      <ModalInfoAndPassword openFormInputData={customerEditFormData} sendFunc = {handleSubmit} />
     </div>
   );
 }

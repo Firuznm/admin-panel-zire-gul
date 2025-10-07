@@ -35,7 +35,7 @@ export default function User() {
     try {
       const resData = await ziraGulAdminPanel
         .api()
-        .get(`${url.getAllUsers}?page=${page}&perPage=6`);
+        .get(`${url.getAllUsers}?page=${page}&perPage=7`);
       setUsersData(resData.data);
     } catch (error) {
       console.log(error);
@@ -115,7 +115,7 @@ export default function User() {
       id: 3,
       label: "Email",
       name: "email",
-      inputType: "text",
+      inputType: "emil",
     },
     {
       id: 5,
@@ -324,7 +324,7 @@ export default function User() {
 
   return (
     <div className={styles.userPage}>
-      <SearchAndAdd addBtntext={"Add New User"} filter={false} />
+      <SearchAndAdd addBtntext={"Add New User"} filter={false} addBtn={true}/>
       <Table
         columns={columns}
         dataSource={usersData?.data}
@@ -354,7 +354,10 @@ export default function User() {
         }}
         passwordModalFormData={passwordModalFormData}
       />
-      <Pagination func={getAllUsersData} paginationData={usersData.meta} />
+      <Pagination
+        func={getAllUsersData}
+        pageCountApi={usersData?.meta?.totalPages}
+      />
     </div>
   );
 }

@@ -8,6 +8,7 @@ const url = {
     getAllUsers: "internal/users",
     createUser: "internal/users/",
     updateUser: (userRoleId) => `internal/users/${userRoleId}`,
+    allCustomers:""
 }
 
 export default url

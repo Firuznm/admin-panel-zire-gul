@@ -1,5 +1,5 @@
 .productsPagination{
-    margin:20px 30px 10px 0;
+    margin:20px 30px 50px 0;
     display: flex;
     justify-content:end;
     align-items: center; 
@@ -35,23 +35,3 @@
     background-color: transparent;
   }
 
-/* pagination responsive */
-  @media only screen and (max-width: 650px) {
-    .productsPagination>li{
-      margin: 0 5px;
-      font-size: .5rem;
-      width: 20px;
-      height: 20px;
-    }
-    li.selected{
-      width: 17px;
-      height: 17px;
-      padding: 3px;
-    }
-    .productsPagination>li.break,
-    li.next,
-    li.previous{
-      background-color: transparent;
-      border: 1px solid rgb(255 210 63);
-    }
-  }

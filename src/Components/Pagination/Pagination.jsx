@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import "./Pagination.css";
 import { useEffect } from "react";
 
-export default function Pagination({ func, paginationData }) {
+export default function Pagination({ func, pageCountApi }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
 
@@ -17,14 +17,13 @@ export default function Pagination({ func, paginationData }) {
 
   useEffect(() => {
     func(currentPage);
-      }, [currentPage]);
-    
-    console.log("pagination data = ", paginationData);
-    
+  }, [currentPage]);
+
+  console.log("pagination data = ", pageCountApi);
 
   return (
     <div className="paginationWrapper">
-      {paginationData?.totalPages > 1 && (
+      {pageCountApi > 1 && (
         <ReactPaginate
           className={"productsPagination"}
           breakLabel="..."
@@ -34,7 +33,7 @@ export default function Pagination({ func, paginationData }) {
           previousLabel="<"
           onPageChange={handlePageClick}
           containerClassName={"pagination"}
-          pageCount={paginationData?.totalPages}
+          pageCount={pageCountApi}
           forcePage={currentPage - 1}
           pageRangeDisplayed={2}
           marginPagesDisplayed={2}
