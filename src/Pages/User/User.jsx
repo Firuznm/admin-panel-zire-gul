@@ -263,7 +263,7 @@ export default function User() {
       render: (record) => `${record.firstName || ""} ${record.lastName || ""}`,
     },
     {
-      title: "Email",
+      title: "Email", 
       dataIndex: "email",
       key: "email",
     },

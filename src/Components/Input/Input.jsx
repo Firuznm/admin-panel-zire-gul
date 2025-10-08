@@ -18,7 +18,7 @@ export default function Input({ inputData, value, onChange }) {
       )}
       {(() => {
         if (inputData.inputType === "select") {
-          return (
+          return ( 
             <select
               name={inputData.name}
               value={value}

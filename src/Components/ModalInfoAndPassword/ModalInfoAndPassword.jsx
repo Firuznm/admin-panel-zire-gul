@@ -5,7 +5,11 @@ import CloseIcon from "../../assets/Icons/CloseIcon";
 import InputComponenet from "../InputComponenet/InputComponenet";
 
 
-export default function ModalInfoAndPassword({ openFormInputData, sendFunc }) {
+export default function ModalInfoAndPassword({
+  openFormInputData,
+  sendInfoFunc,
+  sendPasswordFunc
+}) {
   const { editForModal, editForModalShowHiddenFunc } = UseGlobalContext();
   const [activeBtn, setActiveBtn] = useState("infoBtn");
 
@@ -48,21 +52,19 @@ export default function ModalInfoAndPassword({ openFormInputData, sendFunc }) {
           </span>
         </div>
         <div className={styles.formsArea}>
-          {activeBtn === "infoBtn" ? (
-                 
-            <form onSubmit={sendFunc}>
+          {activeBtn === "infoBtn" && (
+            <form onSubmit={sendInfoFunc}>
               <div className={styles.infoArea}>
                 {openFormInputData.userInfoEditForm.map((item) => (
-                  <InputComponenet
-                    inputData={item}
-                    key={item.id}
-                  />
+                  <InputComponenet inputData={item} key={item.id} />
                 ))}
               </div>
               <button className={styles.saveBtn}>Save</button>
             </form>
-          ) : (
-            <form>
+          )}
+
+          {activeBtn === "passwordBtn" && (
+            <form onSubmit={sendPasswordFunc}>
               <div className={styles.passwordArea}>
                 {openFormInputData.userPasswordEditFormData.map((item) => (
                   <InputComponenet inputData={item} key={item.id} />

@@ -3,6 +3,7 @@ import styles from "./InputComponenet.module.scss";
 import ShowParolIcon from "../../assets/Icons/ShowParolIcon";
 import { useState } from "react";
 import HiddenParolIcon from "../../assets/Icons/HiddenParolIcon";
+import { IMaskInput } from "react-imask";
 
 
 export default function InputComponenet({inputData}) {
@@ -54,21 +55,23 @@ export default function InputComponenet({inputData}) {
               </span>
             </div>
           );
-        // else if (inputData.inputType === "checkbox") {
-        //   return inputData.checkboxData.map((item) => (
-        //     <label key={item.id} className={styles.checkedInputWrapper}>
-        //       <input
-        //         type="checkbox"
-        //         name={inputData.name}
-        //         value={inputData.inpValue}
-        //         className={styles.checkInp}
-        //       />
-        //       {item}
-        //       <span className={styles.checkMark}></span>
-        //     </label>
-        //   ));
-        // }
-        else if (inputData.inputType === "switch") {
+        else if (inputData.inputType === "IMaskInput") {
+          return (
+            <IMaskInput
+              className={styles.input}
+              mask="00/00/0000"
+              definitions={{
+                0: /[0-9]/,
+              }}
+              lazy={false}
+              name="phone"
+              value={inputData.inpValue}
+              onAccept={(value) =>
+                inputData.onChange({ target: { name: inputData.name, value } })
+              }
+            />
+          );
+        } else if (inputData.inputType === "switch") {
           return (
             <div className={styles.switchInput}>
               <label htmlFor={inputData.id}>{inputData.label}</label>
@@ -88,7 +91,7 @@ export default function InputComponenet({inputData}) {
               name={inputData.name}
               type={inputData.inputType}
               className={styles.input}
-                value={inputData.inpValue}
+              value={inputData.inpValue}
               onChange={inputData.onChange}
             />
           );

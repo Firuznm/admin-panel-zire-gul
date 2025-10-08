@@ -40,6 +40,23 @@ h4{
   margin: 0 auto;
   border-radius: none !important;
 }
+.ant-table-tbody>tr>td,
+.ant-table-thead>tr>th{
+  padding: 10px 5px 10px 0 !important;
+}
+
+  .ant-table-wrapper {
+    min-width: 1000px; 
+  }
+.ant-table {
+  table-layout: auto !important; 
+}
+
+.ant-table-thead > tr > th,
+.ant-table-tbody > tr > td {
+  white-space: nowrap; 
+}
+
 
 .ant-table-wrapper .ant-table {
      border-radius: 0 !important;
@@ -61,6 +78,7 @@ h4{
 }
 .ant-table-tbody > tr > td:first-child {
   color: rgba(144, 144, 144, 1) !important;
+  padding-left: 7px !important;
 }
 .ant-table-tbody > tr > td{
   font-size: 14px !important;
@@ -75,7 +93,7 @@ h4{
     }
     .icon-list{
       display: flex;
-      justify-content: end;
+      /* justify-content: end; */
       align-items: center;
       gap: 10px;
       cursor: pointer;
