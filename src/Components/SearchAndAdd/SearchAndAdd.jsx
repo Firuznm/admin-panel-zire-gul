@@ -1,11 +1,11 @@
-import { useState } from "react"
-import styles from "./SearchAndAdd.module.scss"
-import SearchIcon from "../../assets/Icons/SearchIcon"
-import FilterIcon from "../../assets/Icons/FilterIcon"
-import AddIcon from "../../assets/Icons/AddIcon"
-import { UseGlobalContext } from "../../Context/GlobalContext"
+import { useState } from "react";
+import styles from "./SearchAndAdd.module.scss";
+import SearchIcon from "../../assets/Icons/SearchIcon";
+import FilterIcon from "../../assets/Icons/FilterIcon";
+import AddIcon from "../../assets/Icons/AddIcon";
+import { UseGlobalContext } from "../../Context/GlobalContext";
 
-export default function SearchAndAdd({ addBtntext, filter, addBtn }) {
+export default function SearchAndAdd({ addBtntext, filter, addBtn, sortFunc }) {
   const { closeOpenAddModalFunc } = UseGlobalContext();
   const [showHiddenArea, setShowHiddenArea] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -41,17 +41,35 @@ export default function SearchAndAdd({ addBtntext, filter, addBtn }) {
           </button>
           {showHiddenArea && (
             <div className={styles.filterContent}>
-              <span className={styles.filterType}>A-Z</span>
-              <span className={styles.filterType}>Z-A</span>
-              <span className={styles.filterType}>Boykden kiciye</span>
-              <span className={styles.filterType}>Kicikden boyuye</span>
+              <span
+                onClick={() =>
+                  sortFunc({ sortBy: "createdAt", direction: "ASC" })
+                }
+                className={styles.filterType}
+              >
+                Yaranma tarixine gore W
+              </span>
+              <span
+                onClick={() =>
+                  sortFunc({ sortBy: "createdAt", direction: "DESC" })
+                }
+                className={styles.filterType}
+              >
+                Yaranma tarixine gore M
+              </span>
+              <span className={styles.filterType}>ada gore A-Z</span>
+              <span className={styles.filterType}>ada gore Z-A</span>
+              <span className={styles.filterType}>yasha gore W</span>
+              <span className={styles.filterType}>yasha gore M</span>
             </div>
           )}
         </div>
       )}
-      {addBtn && <button onClick={closeOpenAddModalFunc} className={styles.addBtn}>
-        <AddIcon /> {addBtntext}
-      </button>}
+      {addBtn && (
+        <button onClick={closeOpenAddModalFunc} className={styles.addBtn}>
+          <AddIcon /> {addBtntext}
+        </button>
+      )}
     </div>
   );
 }

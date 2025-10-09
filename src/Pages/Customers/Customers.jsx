@@ -1,12 +1,10 @@
 import { Table } from "antd";
-import DeleteIcon from "../../assets/Icons/DeleteIcon";
 import EditIcon from "../../assets/Icons/EditIcon";
 import EyeIcon from "../../assets/Icons/EyeIcon";
 import NoIcon from "../../assets/Icons/NoIcon";
 import YesIcon from "../../assets/Icons/YesIcon";
 import styles from "./Customers.module.scss";
-import { NavLink } from "react-router-dom";
-import SearchAndAdd from "../../Components/SearchAndAdd/SearchAndAdd";
+import { NavLink, useSearchParams } from "react-router-dom";
 import { UseGlobalContext } from "../../Context/GlobalContext";
 import ModalInfoAndPassword from "../../Components/ModalInfoAndPassword/ModalInfoAndPassword";
 import { useFormik } from "formik";
@@ -14,23 +12,54 @@ import { useEffect, useState } from "react";
 import ziraGulAdminPanel from "../../Helpers/Helpers";
 import url from "../../ApiUrls/Url";
 import moment from "moment";
+import FilterIcon from "../../assets/Icons/FilterIcon";
+import SearchIcon from "../../assets/Icons/SearchIcon";
+import ArrowDownIcon from "../../assets/Icons/ArrowDownIcon";
+import ArrowUpIcon from "../../assets/Icons/ArrowUpIcon";
 
 export default function Customers() {
+  const [showHiddenArea, setShowHiddenArea] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
   const { editForModalShowHiddenFunc } = UseGlobalContext();
   const [allCustomersData, setAllCustomersData] = useState([]);
-  const [findCustomerData, setFindCustomerData] = useState({})
+  const [findCustomerData, setFindCustomerData] = useState({});
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const sortBy = searchParams.get("sortBy") || "createdAt";
+  const direction = searchParams.get("direction") || "ASC";
+
+  const handleFilterArea = () => {
+    setShowHiddenArea(!showHiddenArea);
+  };
+
+  const handleSearch = (e) => {
+    setSearchValue(e.target.value);
+  };
 
   const getAllCustomersData = async () => {
     try {
-      const resData = await ziraGulAdminPanel.api().get(url.allCustomers);
-      setAllCustomersData(resData.data);
+      const res = await ziraGulAdminPanel
+        .api()
+        .get(url.allCustomers(sortBy, direction));
+      setAllCustomersData(res.data);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
   useEffect(() => {
+    const sortByParam = searchParams.get("sortBy");
+    const directionParam = searchParams.get("direction");
+    
+    if (!sortByParam || !directionParam) {
+      setSearchParams({ sortBy: "createdAt", direction: "ASC" });
+    }
     getAllCustomersData();
-  }, []);
+  }, [sortBy, direction]);
+
+
+  const handleSortChange = (newSortBy, newDirection) => {
+    setSearchParams({ sortBy: newSortBy, direction: newDirection });
+  };
 
   const infoFormik = useFormik({
     initialValues: {
@@ -67,42 +96,48 @@ export default function Customers() {
     },
   });
 
-    const passwordFormik = useFormik({
-      initialValues: {
-        id: "",
-        newPassword: "",
-        confirmNewPassword: "",
-      },
-      onSubmit: (formValues) => {
-        alert(JSON.stringify(formValues, null, 2));
-        passwordFormik.resetForm();
-        editForModalShowHiddenFunc();
-      },
-    });
+  const passwordFormik = useFormik({
+    initialValues: {
+      newPassword: "",
+      confirmNewPassword: "",
+    },
+    onSubmit: async (formValues) => {
+      console.log(url.changePasswordCustomer(findCustomerData.id));
+      try {
+        await ziraGulAdminPanel
+          .api()
+          .put(url.changePasswordCustomer(findCustomerData.id), formValues);
+      } catch (error) {
+        console.log(error);
+      }
+      getAllCustomersData();
+      passwordFormik.resetForm();
+      editForModalShowHiddenFunc();
+    },
+  });
 
   const findCustomer = (id) => {
     const selectCustomer = allCustomersData?.data?.find(
       (item) => item.id === id
     );
-    setFindCustomerData(selectCustomer)
+    setFindCustomerData(selectCustomer);
   };
   useEffect(() => {
-   if (findCustomerData) {
-     infoFormik.setValues({
-       id: findCustomerData.id,
-       firstName: findCustomerData.firstName || "",
-       lastName: findCustomerData.lastName || "",
-       phone: findCustomerData.phone || "",
-       email: findCustomerData.email || "",
-       gender: findCustomerData.gender || "",
-       birthdate: findCustomerData.birthdate
-         ? moment(findCustomerData.birthdate).format("DD/MM/YYYY")
-         : "",
-       isBlocked: findCustomerData.isBlocked || false,
-     });
-   }  
-  }, [findCustomerData])
-  
+    if (findCustomerData) {
+      infoFormik.setValues({
+        id: findCustomerData.id,
+        firstName: findCustomerData.firstName || "",
+        lastName: findCustomerData.lastName || "",
+        phone: findCustomerData.phone || "",
+        email: findCustomerData.email || "",
+        gender: findCustomerData.gender || "",
+        birthdate: findCustomerData.birthdate
+          ? moment(findCustomerData.birthdate).format("DD/MM/YYYY")
+          : "",
+        isBlocked: findCustomerData.isBlocked || false,
+      });
+    }
+  }, [findCustomerData]);
 
   const customerEditFormData = {
     userInfoEditForm: [
@@ -280,20 +315,67 @@ export default function Customers() {
           >
             <EditIcon />
           </span>
-          <span onClick={() => console.log("delete basildi !!!")}>
-            <DeleteIcon />
-          </span>
         </div>
       ),
     },
   ];
+
   return (
     <div className={styles.customersPage}>
-      <SearchAndAdd
-        addBtntext={"Add New Customers"}
-        filter={true}
-        addBtn={false}
-      />
+      <div className="pageHeaderSearchFilterAdd">
+        <label className="pageHeaderSearchInputWrapper">
+          {searchValue.length > 0 ? "" : <SearchIcon />}
+          <input
+            className="pageHeaderSearchInput"
+            type="text"
+            placeholder="Search"
+            value={searchValue}
+            onChange={handleSearch}
+          />
+        </label>
+        <div className="pageHeaderFilterArea">
+          <button onClick={handleFilterArea} className="pageHeaderFilterBtn">
+            <FilterIcon /> Filter
+          </button>
+
+          {showHiddenArea && (
+            <div className="pageHeaderFilterContent">
+              <span
+                onClick={() => handleSortChange("createdAt", "ASC")}
+                className={`pageHeaderFilterType ${
+                  sortBy === "createdAt" && direction === "ASC"
+                    ? "activeBtn"
+                    : ""
+                }`}
+              >
+                Yaranma tarixinə görə <ArrowDownIcon />
+              </span>
+              <span
+                onClick={() => handleSortChange("createdAt", "DESC")}
+                className={`pageHeaderFilterType ${
+                  sortBy === "createdAt" && direction === "DESC"
+                    ? "activeBtn"
+                    : ""
+                }`}
+              >
+                Yaranma tarixinə görə <ArrowUpIcon />
+              </span>
+              <span className="pageHeaderFilterType">
+                Ada görə A-Z <ArrowDownIcon />
+              </span>
+              <span className="pageHeaderFilterType">
+                Ada görə Z-A <ArrowUpIcon />
+              </span>
+              <span className="pageHeaderFilterType">
+                Yaşa görə <ArrowDownIcon />
+              </span>
+              <span className="pageHeaderFilterType">
+                Yaşa görə <ArrowUpIcon />
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
       <Table
         columns={columns}
         dataSource={allCustomersData?.data}
