@@ -8,7 +8,7 @@ const url = {
     getAllUsers: "internal/users",
     createUser: "internal/users/",
     updateUser: (userRoleId) => `internal/users/${userRoleId}`,
-    allCustomers: (sort, direc) => `internal/customers?sortBy=${sort}&direction=${direc}`,
+    allCustomers: (s, d) => `internal/customers?sortBy=${s}&direction=${d}`,
     updateCustomers: (id) => `internal/customers/${id}`,
     changePasswordCustomer:(id)=>`internal/customers/${id}/change-password`
 }

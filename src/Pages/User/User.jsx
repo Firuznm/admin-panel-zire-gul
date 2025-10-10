@@ -1,24 +1,25 @@
 import { Table } from "antd";
 import EditIcon from "../../assets/Icons/EditIcon";
 import styles from "./User.module.scss";
-import SearchAndAdd from "../../Components/SearchAndAdd/SearchAndAdd";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { UseGlobalContext } from "../../Context/GlobalContext";
-import ModalForEditing from "../../Components/ModalForEditing/ModalForEditing";
-import ModalForAdd from "../../Components/ModalForAdd/ModalForAdd";
 import ziraGulAdminPanel from "../../Helpers/Helpers";
 import url from "../../ApiUrls/Url";
 import moment from "moment";
 import Pagination from "../../Components/Pagination/Pagination";
 import { useSearchParams } from "react-router-dom";
+import SearchIcon from "../../assets/Icons/SearchIcon";
+import AddIcon from "../../assets/Icons/AddIcon";
+import Modal from "../../Components/Modal/Modal";
+import ModalInfoAndPassword from "../../Components/ModalInfoAndPassword/ModalInfoAndPassword";
 
 export default function User() {
-  const { closeOpenAddModalFunc, editForModalShowHiddenFunc } =
-    UseGlobalContext();
+  const { closeOpenModalFunc, editForModalShowHiddenFunc } = UseGlobalContext();
+  const [searchValue, setSearchValue] = useState("");
+  const [userRoleDatas, setUserRoleDatas] = useState([]);
   const [usersData, setUsersData] = useState([]);
   const [selectedUserData, setSelectedUserData] = useState(null);
-  const [userRoleDatas, setUserRoleDatas] = useState([]);
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
 
@@ -47,16 +48,11 @@ export default function User() {
     getAllUsersData(currentPage);
   }, [currentPage]);
 
-  console.log("test user data=", usersData);
-  console.log("select user data,==", selectedUserData);
-
-  // hansi id li userde deyisiklik etmek islediyimizi tapiriq
-  const findSelectedUserData = (id) => {
-    const findSelectUser = usersData.data.find((user) => user.id === id);
-    setSelectedUserData(findSelectUser);
+  const handleSearch = (e) => {
+    setSearchValue(e.target.value);
   };
 
-  // ilk modal acilanda formun (inputlarin) datasi
+  // add butonuna click edende acilan formun (inputlarin) datasi
   const modalData = [
     {
       id: 1,
@@ -97,62 +93,8 @@ export default function User() {
     },
   ];
 
-  // edit duymesine click edende acilan formun (inputlarin) datasi
-  const modalForEditFormData = [
-    {
-      id: 1,
-      label: "Full Name",
-      name: "firstName",
-      inputType: "text",
-    },
-    {
-      id: 2,
-      label: "Last Name",
-      name: "lastName",
-      inputType: "text",
-    },
-    {
-      id: 3,
-      label: "Email",
-      name: "email",
-      inputType: "emil",
-    },
-    {
-      id: 5,
-      label: "Roles",
-      name: "roles",
-      inputType: "select",
-      selectData: userRoleDatas.map((item) => item.title),
-    },
-    {
-      id: 6,
-      label: "Status",
-      name: "status",
-      inputType: "switch",
-    },
-  ];
-  // edit duymesine click edende acilan password formun (inputlarin) datasi
-  const passwordModalFormData = [
-    {
-      id: 1,
-      label: "Password",
-      name: "password",
-      inputType: "password",
-    },
-    {
-      id: 2,
-      label: "Repeat Password",
-      name: "repeatPassword",
-      inputType: "password",
-    },
-  ];
-  //  user elave edemek  üçün formik
-  const {
-    values: addValues,
-    handleChange: addHandleChange,
-    handleSubmit: addHandleSubmit,
-    resetForm: addResetForm,
-  } = useFormik({
+  //  sıfırdan yeni user əlavə ederek api-ye gondermek
+  const addUser = useFormik({
     initialValues: {
       firstName: "",
       lastName: "",
@@ -172,24 +114,17 @@ export default function User() {
           roleIds: selectedRole ? [selectedRole.id] : [],
           isActive: formValues.status,
         };
-
         await ziraGulAdminPanel.api().post(url.createUser, payload);
-        getAllUsersData();
+        getAllUsersData(currentPage);
       } catch (error) {
         console.log(error);
       }
-      addResetForm();
-      closeOpenAddModalFunc();
+      addUser.resetForm();
+      closeOpenModalFunc();
     },
   });
-  // edit butonuna click edende  Edit üçün formik
-  const {
-    values: editValues,
-    handleChange: editHandleChange,
-    handleSubmit: editHandleSubmit,
-    setValues: setEditValues,
-    resetForm: editResetForm,
-  } = useFormik({
+  //  userin melumetlarini deyisdirib api-ye gondermek
+  const userInfoForm = useFormik({
     initialValues: {
       firstName: "",
       lastName: "",
@@ -214,33 +149,33 @@ export default function User() {
         console.log(error);
       }
       getAllUsersData(currentPage);
-      editResetForm();
+      userInfoForm.resetForm();
       setSelectedUserData(null);
-      editForModalShowHiddenFunc();
+      editForModalShowHiddenFunc()
     },
   });
-
-  const {
-    values: passwordValues,
-    handleChange: passwordHandleChange,
-    handleSubmit: passwordHandleSubmit,
-    resetForm: passwordResetForm,
-  } = useFormik({
+  // userin password - nu deyisdirib apiye gondermek
+  const userPasswordForm = useFormik({
     initialValues: {
       password: "",
       repeatPassword: "",
     },
     onSubmit: (formValues) => {
       alert(JSON.stringify(formValues, null, 2));
-      passwordResetForm();
+      userPasswordForm.resetForm();
       editForModalShowHiddenFunc();
     },
   });
 
+  // hansi id li userde deyisiklik etmek islediyimizi tapiriq
+  const findSelectedUserData = (id) => {
+    const findSelectUser = usersData.data.find((user) => user.id === id);
+    setSelectedUserData(findSelectUser);
+  };
   // seçilən user datasini forma doldururam burda
   useEffect(() => {
     if (selectedUserData) {
-      setEditValues({
+      userInfoForm.setValues({
         firstName: selectedUserData.firstName || "",
         lastName: selectedUserData.lastName || "",
         email: selectedUserData.email || "",
@@ -248,7 +183,68 @@ export default function User() {
         status: selectedUserData.isActive || false,
       });
     }
-  }, [selectedUserData, setEditValues]);
+  }, [selectedUserData]);
+
+  // edit duymesine click edende acilan formun (inputlarin) datasi
+  const modalForEditFormData = {
+    infoForm: [
+      {
+        id: 1,
+        label: "Full Name",
+        name: "firstName",
+        inputType: "text",
+        inpValue: userInfoForm.values.firstName,
+        onChange: userInfoForm.handleChange,
+      },
+      {
+        id: 2,
+        label: "Last Name",
+        name: "lastName",
+        inputType: "text",
+        inpValue: userInfoForm.values.lastName,
+        onChange: userInfoForm.handleChange,
+      },
+      {
+        id: 3,
+        label: "Email",
+        name: "email",
+        inputType: "emil",
+        inpValue: userInfoForm.values.email,
+        onChange: userInfoForm.handleChange,
+      },
+      {
+        id: 5,
+        label: "Roles",
+        name: "roles",
+        inputType: "select",
+        selectData: userRoleDatas.map((item) => item.title),
+        inpValue: userInfoForm.values.roles,
+        onChange: userInfoForm.handleChange,
+      },
+      {
+        id: 6,
+        label: "Status",
+        name: "status",
+        inputType: "switch",
+        inpValue: userInfoForm.values.status,
+        onChange: userInfoForm.handleChange,
+      },
+    ],
+    passwordFormData: [
+      {
+        id: 1,
+        label: "New Password",
+        name: "newPassword",
+        inputType: "password",
+      },
+      {
+        id: 2,
+        label: "Confirm New Password",
+        name: "confirmNewPassword",
+        inputType: "password",
+      },
+    ],
+  };
 
   const columns = [
     {
@@ -263,7 +259,7 @@ export default function User() {
       render: (record) => `${record.firstName || ""} ${record.lastName || ""}`,
     },
     {
-      title: "Email", 
+      title: "Email",
       dataIndex: "email",
       key: "email",
     },
@@ -311,8 +307,8 @@ export default function User() {
         <div className="icon-list">
           <span
             onClick={() => {
-              editForModalShowHiddenFunc();
               findSelectedUserData(record.id);
+              editForModalShowHiddenFunc();
             }}
           >
             <EditIcon />
@@ -321,38 +317,40 @@ export default function User() {
       ),
     },
   ];
-
   return (
     <div className={styles.userPage}>
-      <SearchAndAdd addBtntext={"Add New User"} filter={false} addBtn={true}/>
+      <div className="pageHeaderSearchFilterAdd">
+        <label className="pageHeaderSearchInputWrapper">
+          {searchValue.length > 0 ? "" : <SearchIcon />}
+          <input
+            className="pageHeaderSearchInput"
+            type="text"
+            placeholder="Search"
+            value={searchValue}
+            onChange={handleSearch}
+          />
+        </label>
+        <div className="pageHeaderFilterArea">
+          <button onClick={closeOpenModalFunc} className="pageHeaderAddBtn">
+            <AddIcon /> Add New User
+          </button>
+        </div>
+      </div>
       <Table
         columns={columns}
         dataSource={usersData?.data}
         rowKey="id"
         pagination={false}
       />
-      <ModalForAdd
+      <Modal
+        title={"Add New User"}
         ModalData={modalData}
-        formik={{
-          values: addValues,
-          handleChange: addHandleChange,
-          handleSubmit: addHandleSubmit,
-        }}
+        formSubmitFunc={addUser.handleSubmit}
       />
-      <ModalForEditing
-        title={"Edit User"}
-        modalForEditFormData={modalForEditFormData}
-        formik={{
-          values: editValues,
-          handleChange: editHandleChange,
-          handleSubmit: editHandleSubmit,
-        }}
-        passwordFormik={{
-          values: passwordValues,
-          handleChange: passwordHandleChange,
-          handleSubmit: passwordHandleSubmit,
-        }}
-        passwordModalFormData={passwordModalFormData}
+      <ModalInfoAndPassword
+        openFormInputData={modalForEditFormData}
+        sendInfoFunc={userInfoForm.handleSubmit}
+        sendPasswordFunc={userPasswordForm.handleSubmit}
       />
       <Pagination
         func={getAllUsersData}

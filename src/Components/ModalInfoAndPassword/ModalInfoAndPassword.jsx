@@ -25,10 +25,7 @@ export default function ModalInfoAndPassword({
 
   return (
     <div className={styles.modalInfoAndPasswordWrapper}>
-      <div
-        onClick={editForModalShowHiddenFunc}
-        className={styles.overlay}
-      ></div>
+      <div className="overlay" onClick={editForModalShowHiddenFunc}></div>
       <div className={styles.infoAndPasswordArea}>
         <span onClick={editForModalShowHiddenFunc} className={styles.closeIcon}>
           <CloseIcon />
@@ -55,7 +52,7 @@ export default function ModalInfoAndPassword({
           {activeBtn === "infoBtn" && (
             <form onSubmit={sendInfoFunc}>
               <div className={styles.infoArea}>
-                {openFormInputData.userInfoEditForm.map((item) => (
+                {openFormInputData.infoForm.map((item) => (
                   <InputComponenet inputData={item} key={item.id} />
                 ))}
               </div>
@@ -66,7 +63,7 @@ export default function ModalInfoAndPassword({
           {activeBtn === "passwordBtn" && (
             <form onSubmit={sendPasswordFunc}>
               <div className={styles.passwordArea}>
-                {openFormInputData.userPasswordEditFormData.map((item) => (
+                {openFormInputData.passwordFormData.map((item) => (
                   <InputComponenet inputData={item} key={item.id} />
                 ))}
               </div>

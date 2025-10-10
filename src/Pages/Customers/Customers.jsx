@@ -16,6 +16,7 @@ import FilterIcon from "../../assets/Icons/FilterIcon";
 import SearchIcon from "../../assets/Icons/SearchIcon";
 import ArrowDownIcon from "../../assets/Icons/ArrowDownIcon";
 import ArrowUpIcon from "../../assets/Icons/ArrowUpIcon";
+import Swal from "sweetalert2";
 
 export default function Customers() {
   const [showHiddenArea, setShowHiddenArea] = useState(false);
@@ -24,9 +25,9 @@ export default function Customers() {
   const [allCustomersData, setAllCustomersData] = useState([]);
   const [findCustomerData, setFindCustomerData] = useState({});
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const sortBy = searchParams.get("sortBy") || "createdAt";
-  const direction = searchParams.get("direction") || "ASC";
+     // createdAt, firstName, age
+  const sortByParam = searchParams.get("sortBy") || "createdAt";
+  const directionParam = searchParams.get("direction") || "ASC";
 
   const handleFilterArea = () => {
     setShowHiddenArea(!showHiddenArea);
@@ -40,7 +41,7 @@ export default function Customers() {
     try {
       const res = await ziraGulAdminPanel
         .api()
-        .get(url.allCustomers(sortBy, direction));
+        .get(url.allCustomers(sortByParam, directionParam));
       setAllCustomersData(res.data);
     } catch (error) {
       console.error(error);
@@ -49,13 +50,12 @@ export default function Customers() {
   useEffect(() => {
     const sortByParam = searchParams.get("sortBy");
     const directionParam = searchParams.get("direction");
-    
+
     if (!sortByParam || !directionParam) {
       setSearchParams({ sortBy: "createdAt", direction: "ASC" });
     }
     getAllCustomersData();
-  }, [sortBy, direction]);
-
+  }, [sortByParam, directionParam]);
 
   const handleSortChange = (newSortBy, newDirection) => {
     setSearchParams({ sortBy: newSortBy, direction: newDirection });
@@ -109,6 +109,15 @@ export default function Customers() {
           .put(url.changePasswordCustomer(findCustomerData.id), formValues);
       } catch (error) {
         console.log(error);
+          const backendError =
+            error.response?.data?.errorMessages?.confirmNewPassword?.[0]; 
+            Swal.fire({
+              icon: "error",
+              title: "Xəta baş verdi!",
+              text: backendError,
+              confirmButtonText: "Bağla",
+            });
+        
       }
       getAllCustomersData();
       passwordFormik.resetForm();
@@ -140,7 +149,7 @@ export default function Customers() {
   }, [findCustomerData]);
 
   const customerEditFormData = {
-    userInfoEditForm: [
+    infoForm: [
       {
         id: 1,
         label: "First Name",
@@ -201,7 +210,7 @@ export default function Customers() {
         onChange: infoFormik.handleChange,
       },
     ],
-    userPasswordEditFormData: [
+    passwordFormData: [
       {
         id: 1,
         label: "New Password",
@@ -343,7 +352,7 @@ export default function Customers() {
               <span
                 onClick={() => handleSortChange("createdAt", "ASC")}
                 className={`pageHeaderFilterType ${
-                  sortBy === "createdAt" && direction === "ASC"
+                  sortByParam === "createdAt" && directionParam === "ASC"
                     ? "activeBtn"
                     : ""
                 }`}
@@ -353,7 +362,7 @@ export default function Customers() {
               <span
                 onClick={() => handleSortChange("createdAt", "DESC")}
                 className={`pageHeaderFilterType ${
-                  sortBy === "createdAt" && direction === "DESC"
+                  sortByParam === "createdAt" && directionParam === "DESC"
                     ? "activeBtn"
                     : ""
                 }`}

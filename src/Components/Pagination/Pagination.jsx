@@ -19,7 +19,7 @@ export default function Pagination({ func, pageCountApi }) {
     func(currentPage);
   }, [currentPage]);
 
-  console.log("pagination data = ", pageCountApi);
+  // console.log("pagination data = ", pageCountApi);
 
   return (
     <div className="paginationWrapper">

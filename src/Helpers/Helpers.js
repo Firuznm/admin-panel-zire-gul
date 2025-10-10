@@ -12,6 +12,7 @@ class adminPanel {
             headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",
+                "Accept-Language": "az",
                 ...(token && { Authorization: `Bearer ${token}` }), 
             },
         });
