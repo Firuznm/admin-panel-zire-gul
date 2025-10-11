@@ -19,17 +19,14 @@ export default function Pagination({ func, pageCountApi }) {
     func(currentPage);
   }, [currentPage]);
 
-  // console.log("pagination data = ", pageCountApi);
 
   return (
     <div className="paginationWrapper">
-      {pageCountApi > 1 && (
+      {pageCountApi > 0 && (
         <ReactPaginate
           className={"productsPagination"}
           breakLabel="..."
-          // nextLabel={<PaginationBigIcon/>}
           nextLabel=">"
-          // previousLabel={<PaginationSmallIcon />}
           previousLabel="<"
           onPageChange={handlePageClick}
           containerClassName={"pagination"}

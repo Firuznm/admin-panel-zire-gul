@@ -25,10 +25,10 @@ export default function User() {
 
   const getUserRoleDatas = async () => {
     try {
-      const resData = await ziraGulAdminPanel.api().get(url.getAllRoles);
+      const resData = await ziraGulAdminPanel.api().get(url.rolesGetAll);
       setUserRoleDatas(resData.data);
     } catch (error) {
-      console.log(error);
+      console.log(error); 
     }
   };
 
@@ -36,7 +36,7 @@ export default function User() {
     try {
       const resData = await ziraGulAdminPanel
         .api()
-        .get(`${url.getAllUsers}?page=${page}&perPage=7`);
+        .get(`${url.usersGetAll}?page=${page}&perPage=7`);
       setUsersData(resData.data);
     } catch (error) {
       console.log(error);
@@ -114,7 +114,7 @@ export default function User() {
           roleIds: selectedRole ? [selectedRole.id] : [],
           isActive: formValues.status,
         };
-        await ziraGulAdminPanel.api().post(url.createUser, payload);
+        await ziraGulAdminPanel.api().post(url.userCreate, payload);
         getAllUsersData(currentPage);
       } catch (error) {
         console.log(error);
@@ -144,24 +144,30 @@ export default function User() {
           roleIds: selectedRoles.map((r) => r.id),
           isActive: formValues.status,
         };
-        await ziraGulAdminPanel.api().put(url.updateUser(payload.id), payload);
+        await ziraGulAdminPanel.api().put(url.userUpdate(payload.id), payload);
       } catch (error) {
         console.log(error);
       }
       getAllUsersData(currentPage);
       userInfoForm.resetForm();
       setSelectedUserData(null);
-      editForModalShowHiddenFunc()
+      editForModalShowHiddenFunc();
     },
   });
   // userin password - nu deyisdirib apiye gondermek
   const userPasswordForm = useFormik({
     initialValues: {
-      password: "",
-      repeatPassword: "",
+      newPassword: "",
+      confirmNewPassword: "",
     },
-    onSubmit: (formValues) => {
-      alert(JSON.stringify(formValues, null, 2));
+    onSubmit: async (formValues) => {
+      try {
+        await ziraGulAdminPanel
+          .api()
+          .put(url.userChangePassword(selectedUserData.id), formValues);
+      } catch (error) {
+        console.log(error);
+      }
       userPasswordForm.resetForm();
       editForModalShowHiddenFunc();
     },
@@ -236,12 +242,16 @@ export default function User() {
         label: "New Password",
         name: "newPassword",
         inputType: "password",
+        inpValue: userPasswordForm.values.newPassword,
+        onChange: userPasswordForm.handleChange,
       },
       {
         id: 2,
         label: "Confirm New Password",
         name: "confirmNewPassword",
         inputType: "password",
+        inpValue: userPasswordForm.values.confirmNewPassword,
+        onChange: userPasswordForm.handleChange,
       },
     ],
   };

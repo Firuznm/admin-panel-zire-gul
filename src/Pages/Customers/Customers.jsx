@@ -17,6 +17,7 @@ import SearchIcon from "../../assets/Icons/SearchIcon";
 import ArrowDownIcon from "../../assets/Icons/ArrowDownIcon";
 import ArrowUpIcon from "../../assets/Icons/ArrowUpIcon";
 import Swal from "sweetalert2";
+import Pagination from "../../Components/Pagination/Pagination";
 
 export default function Customers() {
   const [showHiddenArea, setShowHiddenArea] = useState(false);
@@ -25,28 +26,29 @@ export default function Customers() {
   const [allCustomersData, setAllCustomersData] = useState([]);
   const [findCustomerData, setFindCustomerData] = useState({});
   const [searchParams, setSearchParams] = useSearchParams();
-     // createdAt, firstName, age
   const sortByParam = searchParams.get("sortBy") || "createdAt";
   const directionParam = searchParams.get("direction") || "ASC";
+  const currentPage = Number(searchParams.get("page") || 1);
 
   const handleFilterArea = () => {
     setShowHiddenArea(!showHiddenArea);
   };
-
   const handleSearch = (e) => {
     setSearchValue(e.target.value);
   };
-
-  const getAllCustomersData = async () => {
+  const getAllCustomersData = async (page = 1) => {
     try {
       const res = await ziraGulAdminPanel
         .api()
-        .get(url.allCustomers(sortByParam, directionParam));
+        .get(
+          `${url.customersAllData(sortByParam, directionParam)}&page=${page}`
+        );
       setAllCustomersData(res.data);
     } catch (error) {
       console.error(error);
     }
   };
+  //  ilk seifeye daxil olanda url-e sortBy ve deirectionu default deyerlerini yazdirib sonra customer- larin datasini getirirem sonra sortBy ve direction deyisende yeniden butun datalari getirirem
   useEffect(() => {
     const sortByParam = searchParams.get("sortBy");
     const directionParam = searchParams.get("direction");
@@ -54,13 +56,15 @@ export default function Customers() {
     if (!sortByParam || !directionParam) {
       setSearchParams({ sortBy: "createdAt", direction: "ASC" });
     }
-    getAllCustomersData();
-  }, [sortByParam, directionParam]);
+    getAllCustomersData(currentPage);
+  }, [sortByParam, directionParam, currentPage]);
 
+  // url-deki yazilan defaul deyerleri filter acilnada deyisdir
   const handleSortChange = (newSortBy, newDirection) => {
     setSearchParams({ sortBy: newSortBy, direction: newDirection });
   };
 
+  // customer-in melumatlarini deyisdirib api-ye gonderirem
   const infoFormik = useFormik({
     initialValues: {
       id: "",
@@ -85,7 +89,7 @@ export default function Customers() {
 
         await ziraGulAdminPanel
           .api()
-          .put(url.updateCustomers(sendData.id), sendData);
+          .put(url.CustomersUpdate(sendData.id), sendData);
       } catch (error) {
         console.log(error);
       }
@@ -95,35 +99,42 @@ export default function Customers() {
       editForModalShowHiddenFunc();
     },
   });
-
+  // customer-in parolunu deyisib api-ye gonderirem
   const passwordFormik = useFormik({
     initialValues: {
       newPassword: "",
       confirmNewPassword: "",
     },
     onSubmit: async (formValues) => {
-      console.log(url.changePasswordCustomer(findCustomerData.id));
       try {
         await ziraGulAdminPanel
           .api()
-          .put(url.changePasswordCustomer(findCustomerData.id), formValues);
+          .put(url.customerChangePassword(findCustomerData.id), formValues);
       } catch (error) {
         console.log(error);
-          const backendError =
-            error.response?.data?.errorMessages?.confirmNewPassword?.[0]; 
-            Swal.fire({
-              icon: "error",
-              title: "Xəta baş verdi!",
-              text: backendError,
-              confirmButtonText: "Bağla",
-            });
-        
+        const backendError =
+          error.response?.data?.errorMessages?.confirmNewPassword?.[0];
+        Swal.fire({
+          icon: "error",
+          title: "Xəta baş verdi!",
+          text: backendError,
+          confirmButtonText: "Bağla",
+        });
       }
       getAllCustomersData();
       passwordFormik.resetForm();
       editForModalShowHiddenFunc();
     },
   });
+
+  const handlePhoneChange = (e) => {
+    const value = e.target.value;
+    if (!/^\+994/.test(value) && value !== "+994") return;
+    const regex = /^\+994\d{0,9}$/; 
+    if (regex.test(value) || value === "+994") {
+      infoFormik.setFieldValue("phone", value);
+    }
+  };
 
   const findCustomer = (id) => {
     const selectCustomer = allCustomersData?.data?.find(
@@ -147,7 +158,7 @@ export default function Customers() {
       });
     }
   }, [findCustomerData]);
-
+  //  edit duymesine basanda acilan inputun datasi ve onun icine ona uygun gelen custemerin datasini doldururam
   const customerEditFormData = {
     infoForm: [
       {
@@ -170,11 +181,9 @@ export default function Customers() {
         id: 3,
         label: "Phone",
         name: "phone",
-        inputType: "number",
-        inpValue: infoFormik.values.phone
-          ? Number(infoFormik.values.phone)
-          : undefined, //phone string geldiyi ucun Number cevirirem
-        onChange: infoFormik.handleChange,
+        inputType: "text",
+        inpValue: infoFormik.values.phone,
+        onChange: handlePhoneChange,
       },
       {
         id: 4,
@@ -394,6 +403,10 @@ export default function Customers() {
         openFormInputData={customerEditFormData}
         sendInfoFunc={infoFormik.handleSubmit}
         sendPasswordFunc={passwordFormik.handleSubmit}
+      />
+      <Pagination
+        func={getAllCustomersData}
+        pageCountApi={allCustomersData?.meta?.totalPages}
       />
     </div>
   );

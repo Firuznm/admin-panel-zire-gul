@@ -26,10 +26,10 @@ export default function Roles() {
 
   const getAllRoles = async () => {
     try {
-      const resData = await ziraGulAdminPanel.api().get(url.getAllRoles);
+      const resData = await ziraGulAdminPanel.api().get(url.rolesGetAll);
       setRoles(resData.data);
     } catch (error) {
-      console.log(error);
+      console.log(error); 
     }
   };
 
