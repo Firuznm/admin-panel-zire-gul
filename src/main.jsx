@@ -10,7 +10,6 @@ import User from "./Pages/User/User";
 import { GlobalProvider } from "./Context/GlobalContext";
 import CustomerView from "./Pages/CustomerView/CustomerView";
 import Login from "./Login/Login";
-import ProtectedRoute from "./ProtectedRoute/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -19,29 +18,23 @@ const router = createBrowserRouter([
   },
   {
     path: "/",
-    element: <ProtectedRoute />,
+    element: <Layout />,
     children: [
       {
-        path: "/",
-        element: <Layout />,
-        children: [
-          {
-            path: "roles",
-            element: <Roles />,
-          },
-          {
-            path: "customers",
-            element: <Customers />,
-          },
-          {
-            path: "/",
-            element: <User />,
-          }, 
-          {
-            path: "customer-view",
-            element: <CustomerView />,
-          },
-        ],
+        index: true,
+        element: <User />,
+      },
+      {
+        path: "roles",
+        element: <Roles />,
+      },
+      {
+        path: "customers",
+        element: <Customers />,
+      },
+      {
+        path: "customer-view",
+        element: <CustomerView />,
       },
     ],
   },

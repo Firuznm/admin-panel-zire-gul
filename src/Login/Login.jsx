@@ -1,11 +1,11 @@
 import { useFormik } from "formik";
 import Input from "../Components/Input/Input";
 import styles from "./Login.module.scss";
-import {useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import ziraGulAdminPanel from "../Helpers/Helpers";
 import url from "../ApiUrls/Url";
 import zireLogo from "../assets/Images/ziregulLogo.png";
-import rigthLogo from "../assets/Images/loginRightLogo.png"
+import rigthLogo from "../assets/Images/loginRightLogo.png";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -18,13 +18,11 @@ export default function Login() {
     enableReinitialize: true,
     onSubmit: async (formValue) => {
       try {
-        const res = await  ziraGulAdminPanel.api().post(url.login, formValue)
+        const res = await ziraGulAdminPanel.api().post(url.login, formValue);
 
         const data = res.data;
 
-        if (res.status === 201 && data.access_token) {
-          localStorage.setItem("token", data.access_token);
-
+        if (res.status === 201 && data.success) {
           navigate("/");
         } else {
           alert("Email və ya şifrə səhvdir!");
