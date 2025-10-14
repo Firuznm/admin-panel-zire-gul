@@ -7,7 +7,7 @@ const url = {
     roleUpdate:(roleId)=>`internal/roles/${roleId}`,
     usersGetAll: "internal/users",
     userCreate: "internal/users/",
-    userUpdate: (userRoleId) => `internal/users/${userRoleId}`,
+    userUpdate: (userRoleId) => `internal/users/${userRoleId}`, 
     userChangePassword:(id)=>`internal/users/${id}/change-password`,
     customersAllData: (s, d) => `internal/customers?sortBy=${s}&direction=${d}`,
     CustomersUpdate: (id) => `internal/customers/${id}`,

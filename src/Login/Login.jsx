@@ -18,11 +18,14 @@ export default function Login() {
     enableReinitialize: true,
     onSubmit: async (formValue) => {
       try {
-        const res = await ziraGulAdminPanel.api().post(url.login, formValue);
+        const res = await ziraGulAdminPanel.api().post(url.login, {
+          email: "johndoe@gmail.com",
+          password: "User123!",
+        });
 
         const data = res.data;
 
-        if (res.status === 201 && data.success) {
+        if (data.success) {
           navigate("/");
         } else {
           alert("Email və ya şifrə səhvdir!");

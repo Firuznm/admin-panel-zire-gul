@@ -67,7 +67,7 @@ export default function ModalInfoAndPassword({
                   <InputComponenet inputData={item} key={item.id} />
                 ))}
               </div>
-              <button className={styles.saveBtn}>Save</button>
+              <button type="submit" className={styles.saveBtn}>Save</button>
             </form>
           )}
         </div>

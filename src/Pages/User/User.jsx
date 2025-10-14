@@ -8,11 +8,12 @@ import ziraGulAdminPanel from "../../Helpers/Helpers";
 import url from "../../ApiUrls/Url";
 import moment from "moment";
 import Pagination from "../../Components/Pagination/Pagination";
-import { useSearchParams } from "react-router-dom";
+// import { useSearchParams } from "react-router-dom";
 import SearchIcon from "../../assets/Icons/SearchIcon";
 import AddIcon from "../../assets/Icons/AddIcon";
 import Modal from "../../Components/Modal/Modal";
 import ModalInfoAndPassword from "../../Components/ModalInfoAndPassword/ModalInfoAndPassword";
+import { useSearchParams } from "react-router-dom";
 
 export default function User() {
   const { closeOpenModalFunc, editForModalShowHiddenFunc } = UseGlobalContext();
@@ -26,9 +27,10 @@ export default function User() {
   const getUserRoleDatas = async () => {
     try {
       const resData = await ziraGulAdminPanel.api().get(url.rolesGetAll);
-      setUserRoleDatas(resData.data);
+      console.log("resData -- ", resData.data);
+      setUserRoleDatas(resData && resData.data ? resData.data : []);
     } catch (error) {
-      console.log(error); 
+      console.log(error);
     }
   };
 
@@ -45,53 +47,15 @@ export default function User() {
 
   useEffect(() => {
     getUserRoleDatas();
-    getAllUsersData(currentPage);
-  }, [currentPage]);
+  }, []);
+
+  // useEffect(() => {
+  // getAllUsersData(currentPage);
+  // }, [currentPage]);
 
   const handleSearch = (e) => {
     setSearchValue(e.target.value);
   };
-
-  // add butonuna click edende acilan formun (inputlarin) datasi
-  const modalData = [
-    {
-      id: 1,
-      label: "Full Name",
-      name: "firstName",
-      inputType: "text",
-    },
-    {
-      id: 2,
-      label: "Last Name",
-      name: "lastName",
-      inputType: "text",
-    },
-    {
-      id: 3,
-      label: "Email",
-      name: "email",
-      inputType: "text",
-    },
-    {
-      id: 4,
-      label: "Password",
-      name: "password",
-      inputType: "password",
-    },
-    {
-      id: 5,
-      label: "Roles",
-      name: "roles",
-      inputType: "select",
-      selectData: userRoleDatas.map((item) => item.title),
-    },
-    {
-      id: 6,
-      label: "Status",
-      name: "status",
-      inputType: "switch",
-    },
-  ];
 
   //  sıfırdan yeni user əlavə ederek api-ye gondermek
   const addUser = useFormik({
@@ -100,7 +64,7 @@ export default function User() {
       lastName: "",
       email: "",
       password: "",
-      roles: [],
+      roles: "",
       status: false,
     },
     onSubmit: async (formValues) => {
@@ -145,10 +109,11 @@ export default function User() {
           isActive: formValues.status,
         };
         await ziraGulAdminPanel.api().put(url.userUpdate(payload.id), payload);
+        getAllUsersData(currentPage);
       } catch (error) {
         console.log(error);
       }
-      getAllUsersData(currentPage);
+      // getAllUsersData(currentPage);
       userInfoForm.resetForm();
       setSelectedUserData(null);
       editForModalShowHiddenFunc();
@@ -255,6 +220,60 @@ export default function User() {
       },
     ],
   };
+
+  // add butonuna click edende acilan formun (inputlarin) datasi
+  const modalData = [
+    {
+      id: 1,
+      label: "Full Name",
+      name: "firstName",
+      inputType: "text",
+      inpValue: addUser.values.firstName,
+      onChange: addUser.handleChange,
+    },
+    {
+      id: 2,
+      label: "Last Name",
+      name: "lastName",
+      inputType: "text",
+      inpValue: addUser.values.lastName,
+      onChange: addUser.handleChange,
+    },
+    {
+      id: 3,
+      label: "Email",
+      name: "email",
+      inputType: "text",
+      inpValue: addUser.values.email,
+      onChange: addUser.handleChange,
+    },
+    {
+      id: 4,
+      label: "Password",
+      name: "password",
+      inputType: "password",
+      inpValue: addUser.values.password,
+      onChange: addUser.handleChange,
+    },
+    {
+      id: 5,
+      label: "Roles",
+      name: "roles",
+      inputType: "select",
+      selectData: userRoleDatas.map((item) => item.title),
+      inpValue: addUser.values.roles,
+      onChange: addUser.handleChange,
+    },
+    {
+      id: 6,
+      label: "Status",
+      name: "status",
+      inputType: "switch",
+      inpValue: addUser.values.status,
+      onChange: (e) =>
+        addUser.setFieldValue("status", e.target ? e.target.value : e),
+    },
+  ];
 
   const columns = [
     {
